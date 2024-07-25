@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <div className="navbar">
+        <div className="text-blue-500 navbar">
           {
             NAV_LIST.map((item, i) => (
               <div className="menu-btn" key={i}>
