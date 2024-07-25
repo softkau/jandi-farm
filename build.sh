@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # this is file is for syncing team-repo and forked-repo
+# git action test
 
 cd ../
 mkdir output
