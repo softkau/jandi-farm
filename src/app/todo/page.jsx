@@ -9,9 +9,11 @@ export default function Todo() {
     due_date: '',
     tag: ''
   });
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
 
     try {
       const response = await fetch('/api/todo/new', {
@@ -25,12 +27,12 @@ export default function Todo() {
       });
 
       if (response.ok) {
-        router.push('/')
+        window.location.reload();
       }
     } catch (error) {
       console.log(error)
     } finally {
-      
+      setSubmitting(false);
     }
   }
 
@@ -76,10 +78,11 @@ export default function Todo() {
           ></input>
         </label>
         <button
-          className="m-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           type="submit"
+          disabled={submitting}
+          className="m-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          submit
+          { submitting ? 'submitting...' : 'submit' }
         </button>
       </form>
 	  </div>
