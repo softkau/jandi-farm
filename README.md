@@ -20,17 +20,16 @@ todo 생성 엔드포인트
  * POST  
    `Todo` 데이터 베이스에 `body` 내용을 기반으로 todo를 생성  
    인증이 되지 않았을시 `401` 반환
-   (현재 project 필드 미구현)
 ```js
 body: {
   title: "title",
   detail: "details...",
   due_date: "년/월/일", // Date()로 파싱 가능한 문자열
   tag: "tag(no_spaces)", // 현재로는 tag 1개만 가능
-  project: "proj_name(no_spaces)", // 존재하는 project에 연결(미구현)
+  project: "proj_name(no_spaces)", // 존재하는 project에 연결
   status: {
-    done: false, // (미구현)
-    is_public: false // 공개 상태 (미구현)
+    done: false,
+    is_public: false // 공개 상태
   }
 }
 ```

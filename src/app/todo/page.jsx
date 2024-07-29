@@ -7,7 +7,12 @@ export default function Todo() {
     title: '',
     detail: '',
     due_date: '',
-    tag: ''
+    tag: '',
+    project: '',
+    status: {
+      done: false,
+      is_public: false
+    }
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -22,7 +27,9 @@ export default function Todo() {
           title: post.title,
           detail: post.detail,
           due_date: post.due_date,
-          tag: post.tag
+          tag: post.tag,
+          project: post.project,
+          status: post.status
         })
       });
 
@@ -74,8 +81,27 @@ export default function Todo() {
           <input
             value={post.tag}
             onChange={(e) => setPost({ ...post, tag: e.target.value })}
+            pattern="^#[^# ]+$"
             placeholder="#example_tag"
           ></input>
+        </label>
+        <label className="flex flex-row-reverse m-1 gap-2">
+          <span className="font-semibold mr-3">Make Public</span>
+          <input
+            type="checkbox"
+            className="accent-blue-500"
+            checked={post.status.is_public}
+            onChange={
+              (e) => setPost({
+                ...post,
+                status: {
+                  ...post.status,
+                  is_public: !post.status.is_public
+                }
+              })
+            }
+          >
+          </input>
         </label>
         <button
           type="submit"
