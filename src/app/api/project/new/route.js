@@ -24,9 +24,13 @@ export const POST = async (req, res) => {
       is_public: is_public
     });
 
-    newProject.save();
+    const docSaved = await newProject.save();
+    if (docSaved !== newProject) {
+      console.log('[에러] DB에 Project 저장 실패');
+      return new Response('Failed to create new Project', { status: 500 });
+    }
 
-    return new Response(JSON.stringify(newProject), { status: 201 });
+    return new Response(newProject, { status: 201 });
   } catch (error) {
     console.log('[에러] /api/project/new POST 실패');
     console.log(error);

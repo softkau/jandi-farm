@@ -29,7 +29,7 @@ export const POST = async (req, res) => {
     if (project) { // project 값이 있을 때
       if (typeof project === 'string' || project instanceof String) { // 값이 멀쩡한 값일 때
         // 같은 이름을 가진 project를 검색
-        const proj = Project.findOne({
+        const proj = await Project.findOne({
           owner: session.user.id,
           title: project
         });
@@ -55,9 +55,13 @@ export const POST = async (req, res) => {
       is_public: is_public
     });
 
-    newTodo.save();
+    const docSaved = await newTodo.save();
+    if (docSaved !== newTodo) {
+      console.log('[에러] DB에 Todo 저장 실패');
+      return new Response('Failed to create new Todo List', { status: 500 });
+    } 
 
-    return new Response(JSON.stringify(newTodo), { status: 201 });
+    return new Response(newTodo, { status: 201 });
   } catch (error) {
     console.log('[에러] /api/todo/new POST 실패');
     console.log(error);
