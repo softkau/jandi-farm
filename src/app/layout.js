@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navigation from "@/components/navigation";
 import Detail from "@/components/detail";
+import AuthProvider from "@/components/AuthProvider";
 
 export const metadata = {
   title: "잔디농장",
@@ -12,13 +13,15 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="min-h-screen">
         <div className="flex flex-col h-screen">
-          <Navigation />
-          <div className="flex flex-1 overflow-hidden">
-            <main className="flex-1 flex justify-center border-4 border-indigo-400">
-              {children}
-            </main>
-            <Detail />
-          </div>
+          <AuthProvider>
+            <Navigation />
+            <div className="flex flex-1 overflow-hidden">
+              <main className="flex-1 flex justify-center border-4 border-indigo-400">
+                {children}
+              </main>
+              <Detail />
+            </div>
+          </AuthProvider>
         </div>
       </body>
     </html>
