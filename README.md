@@ -1,7 +1,16 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 # Backend API
-이하 백엔드 API 엔드포인트를 설명
+이하 백엔드 API 엔드포인트를 설명  
+/api-test에 접속하면 간단하게 테스트해볼 수 있습니다.
+
+### 백엔드 TODO
+ * 유튜브처럼 handle(ID)을 직접 유저가 적을 수 있는 registration page 기능 구현
+   - 이렇게 하면 ObjectID가 아닌 좀 더 읽기 쉬운 handle(ID)로 동적라우팅을 할 수 있을 것
+   - 또한 project도 title을 `handle/project-name` 형태로 만들어서 같은 이름 충돌 이슈도 해결 가능
+ * tag나 title, detail 내용등으로 검색하는 기능
+   - 해당 라우팅은 어떻게 할지 미정
+ * 관리자 계정/권한(아직은 필요없음)
 
 ## /api/auth/[...nextauth]
 [NextAuth](https://next-auth.js.org/) 기반 로그인 및 인증 엔드포인트
@@ -9,7 +18,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
  * POST
 
 ### AuthProviders:
- * Google
+ * Google  
+ (추후 더 지원 예정)
 
 ### NextAuth 공식 문서:
  * [Client API](https://next-auth.js.org/getting-started/client)
@@ -33,8 +43,9 @@ body: {
   }
 }
 ```
+
 ## /api/todo/[id]
-todo 조회/수정/삭제 엔드포인트(미구현)  
+todo 조회/수정/삭제 엔드포인트  
 인증 정보와 todo의 소유자가 일치하지 않을 시 실패
  * GET  
    요청한 `id`의 todo를 조회  
@@ -45,20 +56,50 @@ todo 조회/수정/삭제 엔드포인트(미구현)
    요청한 `id`의 todo를 `Todo` 데이터베이스에서 삭제
 
 ## /api/project/new
-project 생성 엔드포인트 (미구현)
+project 생성 엔드포인트
  * POST  
    `Project` 데이터 베이스에 `body` 내용을 기반으로 project를 생성  
-   인증이 되지 않았을시 `401` 반환
+   인증이 되지 않았을시 `401` 반환  
+   (현재 하나의 DB에 동일한 title을 가진 project가 둘 이상 존재할 수 없습니다  
+   이는 추후 수정될 예정입니다)
 ```js
 body: {
   title: "title",
   detail: "details...",
   due_date: "년/월/일", // Date()로 파싱 가능한 문자열
   status: {
-    is_public: false // 공개 상태 (미구현)
+    is_public: false // 공개 상태
   }
 }
 ```
+
+## /api/project/[id]
+project 조회/수정/삭제 엔드포인트  
+인증 정보와 project의 소유자가 일치하지 않을 시 실패
+ * GET  
+   요청한 `id`의 project를 조회  
+   만약 `project.status.is_public === true`이면 소유자가 달라도 조회 가능
+ * PATCH  
+   요청한 `id`의 project를 수정
+ * DELETE  
+   요청한 `id`의 project를 `Project` 데이터베이스에서 삭제
+
+## /api/project/[id]/todo
+`id`에 해당하는 project에 포함된 todo를 전부 조회하는 엔드포인트
+ * GET
+   요청한 `id`의 project에 포함된 todo를 조회  
+   이 엔드포인트에서는 개별 todo의 `is_public`값은 무시하고  
+   project의 `is_public`만 고려하여 조회한다
+
+## /api/user/[id]/todo
+`id`에 해당하는 유저의 todo를 전부 조회하는 엔드포인트  
+소유자가 아닌 경우, 공개 설정된 todo만 조회 가능
+ * GET
+
+## /api/user/[id]/project (미구현)
+`id`에 해당하는 유저의 project를 전부 조회하는 엔드포인트  
+소유자가 아닌 경우, 공개 설정된 project만 조회 가능
+ * GET
 
 # Next.js Generated Docs
 

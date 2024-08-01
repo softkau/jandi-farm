@@ -4,6 +4,7 @@ let isConnected = false;
 
 export const connectToDB = async () => {
   mongoose.set('strictQuery', true);
+  // mongoose.set('autoIndex', false); <= 배포할 때 성능향상을 위해 이 줄을 활성화할 것
 
   if (isConnected) {
     console.log('[알림] MongoDB에 이미 연결되어 있습니다.');
