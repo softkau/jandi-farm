@@ -28,11 +28,9 @@ export const POST = async (req) => {
   }
   // tag format validation!
   let tagList = tag ? (Array.isArray(tag) ? tag : [tag]) : [];
-  if (!tagList.every(t => /^#[^# ]+$/.test(t))) {
+  if (!tagList.every(t => /^[^# ]+$/.test(t))) {
     return new Response("Illegal tag format!", { status: 422 });
   }
-  // remove the preceding # symbol from tagList
-  tagList = tagList.map(t => t.substring(1));
 
   const { done, is_public } = status || {};
 
