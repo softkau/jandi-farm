@@ -12,7 +12,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-const DatePicker = React.forwardRef(({ placeholder, onChange, value }, ref) => {
+const DatePicker = React.forwardRef(({ placeholder, onChange, value, ...props }, ref) => {
 
   return (
     <Popover>
@@ -34,6 +34,7 @@ const DatePicker = React.forwardRef(({ placeholder, onChange, value }, ref) => {
           selected={value}
           onSelect={onChange}
           initialFocus
+          { ...props }
         />
       </PopoverContent>
     </Popover>
