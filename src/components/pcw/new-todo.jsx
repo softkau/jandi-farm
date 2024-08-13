@@ -51,7 +51,6 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
     tagList
   } = gs;
   console.log("%crendering NewTodo", 'background-color: red; color: white')
-  console.log("focused: %c" + format(focusedDate, "P"), 'color: green')
 
   const form = useForm({
     defaultValues: {

@@ -16,8 +16,14 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+
     extend: {
       colors: {
+        jandi0: "#ebedf0",
+        jandi1: "#9be9a8",
+        jandi2: "#40c463",
+        jandi3: "#30a14e",
+        jandi4: "#216e39",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
