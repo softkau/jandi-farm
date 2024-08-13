@@ -1,18 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-/* 스크롤바 숨기기 */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-/* .no-scrollbar {
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
-} */
-
-/* body {
-  margin: 0;
+body {
+  margin: 0
 }
 
 .red {
@@ -26,13 +14,13 @@
 .navbar {
   background: white;
   padding: 15px;
-  border-bottom: #dddddd solid 2px;
+  border-bottom: #DDDDDD solid 2px;
   display: flex;
   align-items: center;
 }
 
 .navbar .menu-btn {
-  border-right: #dddddd solid 1px;
+  border-right: #DDDDDD solid 1px
 }
 
 .navbar .menu-btn:last-child {
@@ -43,4 +31,4 @@
   padding-left: 10px;
   padding-right: 10px;
   text-decoration: none;
-} */
+}

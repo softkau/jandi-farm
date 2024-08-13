@@ -4,43 +4,25 @@ const TodoSchema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: [true, 'owner is required']
   },
   title: {
-    type: Schema.Types.String,
+    type: String,
     required: [true, 'title is required!']
   },
   due_date: {
-    type: Schema.Types.Date,
+    type: String,
     required: [true, 'due_date is required!']
   },
   detail: {
-    type: Schema.Types.String,
-    required: [true, 'detail is required!']
+    type: String,
+    required: [true, 'detail is required!'],
   },
-  tags: {
-    type: [
-      {
-        type: Schema.Types.String,
-        required: [true, 'null tag is not allowed']
-      }
-    ],
-    default: [],
-    required: function() { return this.tags != undefined }
+  tag: {
+    type: String,
   },
-  project: { // One-to-Squillions 부모(프로젝트) 참조
+  project: {
     type: Schema.Types.ObjectId,
-    ref: 'Project'
-  },
-  done: {
-    type: Schema.Types.Boolean,
-    default: false,
-    required: function() { return this.done != undefined }
-  },
-  is_public: {
-    type: Schema.Types.Boolean,
-    default: false,
-    required: function() { return this.is_public != undefined }
+    ref: 'Project',
   }
 });
 
