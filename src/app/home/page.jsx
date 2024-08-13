@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="w-full h-screen flex justify-between">
       <div className="w-80 h-full flex-shrink-0 flex flex-col bg-gray-100">
-        <div className="h-24 bg-green-200 flex justify-center items-center">
+        <div className="h-20 bg-green-200 flex justify-center items-center">
           logo
         </div>
         <div className="h-full flex flex-col justify-between">

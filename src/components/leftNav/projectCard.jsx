@@ -8,8 +8,8 @@ export default function ProjectCard({ isFocused = false }) {
           <Image
             src={"/pen-icon.png"}
             layout="responsive"
-            width={10}
-            height={10}
+            width={1}
+            height={1}
           />
         </div>
         <div
@@ -22,8 +22,8 @@ export default function ProjectCard({ isFocused = false }) {
             <Image
               src={"/detail.png"}
               layout="responsive"
-              width={10}
-              height={10}
+              width={1}
+              height={1}
             />
           </div>
         ) : (
