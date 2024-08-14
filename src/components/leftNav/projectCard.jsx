@@ -2,17 +2,19 @@ import Image from "next/image";
 
 // TODO : data 구체화하기
 export default function ProjectCard({ isFocused = false, data, setSelected }) {
+  const handleSelected = (projectName) => {
+    if (isFocused) {
+      setSelected("");
+    } else {
+      setSelected(data);
+    }
+  };
+
   return (
     <div>
       <div
         className="h-10 w-full flex items-center p-1 cursor-pointer"
-        onClick={() => {
-          if (isFocused) {
-            setSelected("");
-          } else {
-            setSelected(data);
-          }
-        }}
+        onClick={() => handleSelected(data)}
       >
         <div className="p-1 h-full aspect-square">
           <Image
