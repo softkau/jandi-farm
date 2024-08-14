@@ -7,6 +7,14 @@ export default function ProjectContainer({
   selected,
   setSelected,
 }) {
+  const handleSelected = (projectName, isFocused) => {
+    if (isFocused) {
+      setSelected("");
+    } else {
+      setSelected(projectName);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col p-1 gap-2">
       {projects.map((data, idx) => (
@@ -14,7 +22,7 @@ export default function ProjectContainer({
           key={idx}
           data={data}
           isFocused={data == selected ? true : false}
-          setSelected={setSelected}
+          handleSelected={handleSelected}
         />
       ))}
       <div className="flex justify-center items-center p-2">
