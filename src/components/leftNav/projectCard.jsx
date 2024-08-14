@@ -1,9 +1,17 @@
 import Image from "next/image";
 
-export default function ProjectCard({ isFocused = false }) {
+// TODO : data 구체화하기
+export default function ProjectCard({
+  isFocused = false,
+  data,
+  handleSelected,
+}) {
   return (
-    <div className="">
-      <div className="h-10 w-full flex items-center p-1">
+    <div>
+      <div
+        className="h-10 w-full flex items-center p-1 cursor-pointer"
+        onClick={() => handleSelected(data, isFocused)}
+      >
         <div className="p-1 h-full aspect-square">
           <Image
             src={"/pen-icon.png"}
@@ -15,7 +23,7 @@ export default function ProjectCard({ isFocused = false }) {
         <div
           className={`ml-2 mr-auto ${isFocused ? "font-bold" : "font-medium"}`}
         >
-          Project title
+          {data}
         </div>
         {isFocused ? (
           <div className="h-full aspect-square">
