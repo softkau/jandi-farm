@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
               <main className="flex-1 flex justify-center border-4 border-indigo-400">
                 {children}
               </main>
-              <Detail />
+              {/*<Detail />*/}
             </div>
           </AuthProvider>
         </div>

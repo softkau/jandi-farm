@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { CalendarClassNames, CalendarComponents, CalendarFormatters } from '../calender-style'
+import { CalendarClassNames, CalendarComponents, CalendarFormatters } from '../calendar-comp/calender-style'
 
 const DatePicker = React.forwardRef(({ placeholder, onChange, value, ...props }, ref) => {
 

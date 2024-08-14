@@ -43,4 +43,16 @@ const CalendarComponents = {
   )
 }
 
-export { CalendarClassNames, CalendarFormatters, CalendarComponents }
+const ChevronFactory = (onPrev, onNext) => {
+  return ({ ...props }) => (
+    <>
+      {(props.orientation === "left") ? (
+        <ChevronUp onClick={onPrev} className="h-6 w-6" />
+      ) : (
+        <ChevronDown onClick={onNext} className="h-6 w-6" />
+      )}
+    </>
+  )
+}
+
+export { CalendarClassNames, CalendarFormatters, CalendarComponents, ChevronFactory }
