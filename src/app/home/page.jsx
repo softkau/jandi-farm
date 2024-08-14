@@ -21,7 +21,7 @@ export default function Home() {
     "대충 겁나 긴 태그~~",
     "연구실",
   ]);
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState(new Set());
 
   return (
     <div className="w-full h-screen flex justify-between">
@@ -36,7 +36,12 @@ export default function Home() {
             selected={selectedProject}
             setSelected={setSelectedProject}
           />
-          <TagContainer />
+          <TagContainer
+            tags={tagList}
+            setTags={setTagList}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+          />
         </div>
       </div>
       <div className="w-144 border-2">center</div>

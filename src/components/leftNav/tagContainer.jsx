@@ -1,22 +1,33 @@
 import TagCard from "./tagCard";
+import { TagBadge } from "@/components/pcw/new-todo-comp/tag-selector";
 
-export default function TagContainer() {
-  const testData = [
-    "운동",
-    "코딩",
-    "비지니스",
-    "약속",
-    "학교",
-    "대충 겁나 긴 태그~~",
-    "연구실",
-    "동아리",
-  ];
+export default function TagContainer({
+  tags,
+  setTags,
+  selectedTags,
+  setSelectedTags,
+}) {
+  const handleSelected = (tagName) => {
+    const newSelected = new Set(selectedTags);
+    if (newSelected.has(tagName)) {
+      newSelected.delete(tagName);
+    } else {
+      newSelected.add(tagName);
+    }
+    setSelectedTags(newSelected);
+  };
+
   return (
     <div className="w-full">
       <span className="font-bold m-4">Tags</span>
       <div className="w-full flex flex-wrap gap-2 p-3">
-        {testData.map((data, idx) => (
-          <TagCard key={idx} name={data} isSelected={idx % 3 == 1} />
+        {tags.map((data, idx) => (
+          <TagCard
+            key={idx}
+            name={data}
+            isSelected={selectedTags.has(data)}
+            handleSelected={handleSelected}
+          />
         ))}
       </div>
     </div>
