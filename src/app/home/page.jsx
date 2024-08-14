@@ -2,6 +2,7 @@
 
 import ProjectContainer from "@/components/leftNav/projectContainer";
 import TagContainer from "@/components/leftNav/tagContainer";
+import DateContainer from "@/components/center/dateContainer";
 import { useState } from "react";
 
 export default function Home() {
@@ -44,7 +45,11 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="w-144 border-2">center</div>
+      <div className="w-144 overflow-y-auto shrink-0 no-scrollbar">
+        <DateContainer />
+        <DateContainer />
+        <DateContainer />
+      </div>
       <div className="w-96 h-full flex-shrink-0 border-2">right</div>
     </div>
   );
