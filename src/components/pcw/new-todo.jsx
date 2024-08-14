@@ -40,14 +40,8 @@ const formSchema = z.object({
   })
 })
 
-const placeholder = {
-  projectList: ["projectA", "projectB", "projectC"],
-  selectedProject: "projectB",
-  tagList: ["abc", "bcd", "asdfasdf"],
-  selectedTags: ["abc", "asdfasdf"],
-}
 
-const NewTodo = ({ gs = placeholder }) => {
+const NewTodo = ({ gs = placeholder, className, unmount }) => {
   const {
     focusedDate,
     selectedTags,
@@ -56,7 +50,8 @@ const NewTodo = ({ gs = placeholder }) => {
     projectList,
     tagList
   } = gs;
-  
+  console.log("%crendering NewTodo", 'background-color: red; color: white')
+
   const form = useForm({
     defaultValues: {
       title: '',
@@ -99,7 +94,7 @@ const NewTodo = ({ gs = placeholder }) => {
   }
 
   return (
-    <CardWrapper title="새 일정 추가하기">
+    <CardWrapper title="새 일정 추가하기" className={ className }>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex space-x-4 mb-3">
@@ -182,7 +177,7 @@ const NewTodo = ({ gs = placeholder }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <DatePicker placeholder="마감일을 지정해주십시오..." { ...field } />
+                      <DatePicker placeholder="마감일을 지정해주십시오..." { ...field } required/>
                     </FormControl>
                     <FormMessage/>
                   </FormItem>
@@ -198,7 +193,7 @@ const NewTodo = ({ gs = placeholder }) => {
                 <Button disabled><Loader2 className="mr-2 h-4 w-4 animate-spin"/>등록 중...</Button>
               )
             }
-            <Button className="rounded-3xl" variant="destructive">취소</Button>
+            <Button className="rounded-3xl" variant="destructive" onClick={unmount}>취소</Button>
           </div>
         </form>
       </Form>

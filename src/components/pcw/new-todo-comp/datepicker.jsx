@@ -2,8 +2,10 @@
 
 import React from 'react'
 import { format } from "date-fns"
+import { ko } from "date-fns/locale"
+
 import { Calendar as CalendarIcon } from "lucide-react"
-import { Calendar } from "@/components/ui/calendar"
+import { DayPicker } from 'react-day-picker'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
@@ -11,8 +13,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { CalendarClassNames, CalendarComponents, CalendarFormatters } from '../calendar-comp/calender-style'
 
-const DatePicker = React.forwardRef(({ placeholder, onChange, value }, ref) => {
+const DatePicker = React.forwardRef(({ placeholder, onChange, value, ...props }, ref) => {
 
   return (
     <Popover>
@@ -25,15 +28,24 @@ const DatePicker = React.forwardRef(({ placeholder, onChange, value }, ref) => {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(value, "P") : <span>{placeholder}</span>}
+          {value ? format(value, "PPP", { locale: ko }) : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar
+        <DayPicker
           mode="single"
+          showOutsideDays={true}
+          fixedWeeks={true}
+          initialFocus
           selected={value}
           onSelect={onChange}
-          initialFocus
+          className="p-3"
+          locale={ko}
+
+          classNames={CalendarClassNames}
+          formatters={CalendarFormatters}
+          components={CalendarComponents}
+          { ...props }
         />
       </PopoverContent>
     </Popover>
