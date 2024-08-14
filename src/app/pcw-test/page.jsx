@@ -75,7 +75,7 @@ const PcwTest = () => {
   const [showNewTodo, setShowNewTodo] = useState(false)
 
   return (
-    <div className="w-full h-full relative flex flex-row">
+    <div className="w-full relative flex flex-row h-screen">
       
       <div className="flex-grow relative">
 
