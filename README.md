@@ -86,7 +86,7 @@ project 조회/수정/삭제 엔드포인트
 
 ## /api/project/[id]/todo
 `id`에 해당하는 project에 포함된 todo를 전부 조회하는 엔드포인트
- * GET
+ * GET  
    요청한 `id`의 project에 포함된 todo를 조회  
    이 엔드포인트에서는 개별 todo의 `is_public`값은 무시하고  
    project의 `is_public`만 고려하여 조회한다
@@ -94,12 +94,16 @@ project 조회/수정/삭제 엔드포인트
 ## /api/user/[id]/todo
 `id`에 해당하는 유저의 todo를 전부 조회하는 엔드포인트  
 소유자가 아닌 경우, 공개 설정된 todo만 조회 가능
- * GET
+ * GET  
+ 요청한 `id`를 가진 유저의 todo를 조회하여 `Array`로 반환한다  
+ 다른 유저의 todo는 `is_public`이 `true`인 경우만 반환한다
 
-## /api/user/[id]/project (미구현)
+## /api/user/[id]/project
 `id`에 해당하는 유저의 project를 전부 조회하는 엔드포인트  
 소유자가 아닌 경우, 공개 설정된 project만 조회 가능
- * GET
+ * GET  
+   요청한 `id`를 가진 유저의 project를 조회하여 `Array`로 반환한다  
+   다른 유저의 project는 `is_public`이 `true`인 경우만 반환한다
 
 # Next.js Generated Docs
 
