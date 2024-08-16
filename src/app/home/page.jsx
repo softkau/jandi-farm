@@ -4,6 +4,7 @@ import ProjectContainer from "@/components/leftNav/projectContainer";
 import TagContainer from "@/components/leftNav/tagContainer";
 import DateContainer from "@/components/center/dateContainer";
 import { useEffect, useState } from "react";
+import { compareAsc } from "date-fns";
 
 // 날짜별로 todo 그룹화
 function groupByDate(components) {
@@ -64,6 +65,16 @@ export default function Home() {
       project: null,
       done: false,
     },
+    {
+      _id: "1237",
+      owner: "1234",
+      title: "todo 4",
+      due_date: new Date("2024-08-21T15:00:00.000+00:00"),
+      detail: "skku toy project",
+      tags: ["tag1", "tag3"],
+      project: null,
+      done: false,
+    },
   ]);
   const [groupedTodo, setGroupedTodo] = useState([]);
 
@@ -94,9 +105,11 @@ export default function Home() {
         </div>
       </div>
       <div className="w-144 overflow-y-auto shrink-0 no-scrollbar">
-        {Object.keys(groupedTodo).map((date, idx) => (
-          <DateContainer key={idx} date={date} todoList={groupedTodo[date]} />
-        ))}
+        {Object.keys(groupedTodo)
+          .sort((a, b) => compareAsc(a, b))
+          .map((date, idx) => (
+            <DateContainer key={idx} date={date} todoList={groupedTodo[date]} />
+          ))}
       </div>
       <div className="w-96 h-full flex-shrink-0 border-2">right</div>
     </div>
