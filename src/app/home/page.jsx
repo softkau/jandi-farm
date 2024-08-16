@@ -16,14 +16,22 @@ function groupByDate(components) {
   }, {});
 }
 
+function filterTodo(jsonArray, targetTags, targetProject) {
+  return jsonArray.filter(
+    (item) =>
+      targetTags.every((tag) => item.tags.includes(tag)) &&
+      (targetProject ? item.project === targetProject : true)
+  );
+}
+
 export default function Home() {
   // 디버깅용 임시 데이터
   const [projectList, setProjectList] = useState([
-    "토이 프로젝트",
+    "toy project",
     "산학협력 프로젝트",
     "소프트웨어 공학 개론",
   ]);
-  const [selectedProject, setSelectedProject] = useState();
+  const [selectedProject, setSelectedProject] = useState(null);
   const [tagList, setTagList] = useState([
     "운동",
     "코딩",
@@ -32,6 +40,9 @@ export default function Home() {
     "학교",
     "대충 겁나 긴 태그~~",
     "연구실",
+    "tag1",
+    "tag2",
+    "tag3",
   ]);
   const [selectedTags, setSelectedTags] = useState(new Set());
   const [todoList, setTodoList] = useState([
@@ -42,7 +53,7 @@ export default function Home() {
       due_date: new Date("2024-09-19T15:00:00.000+00:00"),
       detail: "skku toy project",
       tags: ["tag1", "tag2"],
-      project: null,
+      project: "toy project",
       done: false,
     },
     {
@@ -78,10 +89,16 @@ export default function Home() {
   ]);
   const [groupedTodo, setGroupedTodo] = useState([]);
 
-  // TODO: api fetch 추가
+  // todoList를 selectedProject, selectedTags로 필터링
+  // 필터링한 값을 날짜별로 그룹화하여 state변경
+  // selectedProject, selectedTags, todoList에 의존하여 각 상태가 변할때마다 업데이트
   useEffect(() => {
-    setGroupedTodo(groupByDate(todoList));
-  }, []);
+    setGroupedTodo((prev) => {
+      return groupByDate(
+        filterTodo(todoList, Array.from(selectedTags), selectedProject)
+      );
+    });
+  }, [selectedProject, selectedTags, todoList]);
 
   return (
     <div className="w-full h-screen flex justify-between">
