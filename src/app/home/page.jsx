@@ -3,7 +3,17 @@
 import ProjectContainer from "@/components/leftNav/projectContainer";
 import TagContainer from "@/components/leftNav/tagContainer";
 import DateContainer from "@/components/center/dateContainer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+// 날짜별로 todo 그룹화
+function groupByDate(components) {
+  return components.reduce((acc, component) => {
+    const { due_date } = component;
+    if (!acc[due_date]) acc[due_date] = [];
+    acc[due_date].push(component);
+    return acc;
+  }, {});
+}
 
 export default function Home() {
   // 디버깅용 임시 데이터
@@ -23,6 +33,44 @@ export default function Home() {
     "연구실",
   ]);
   const [selectedTags, setSelectedTags] = useState(new Set());
+  const [todoList, setTodoList] = useState([
+    {
+      _id: "1234",
+      owner: "1234",
+      title: "toy project",
+      due_date: new Date("2024-09-19T15:00:00.000+00:00"),
+      detail: "skku toy project",
+      tags: ["tag1", "tag2"],
+      project: null,
+      done: false,
+    },
+    {
+      _id: "1235",
+      owner: "1234",
+      title: "done test",
+      due_date: new Date("2024-09-19T15:00:00.000+00:00"),
+      detail: "skku toy project",
+      tags: ["tag1"],
+      project: null,
+      done: true,
+    },
+    {
+      _id: "1236",
+      owner: "1234",
+      title: "todo 3",
+      due_date: new Date("2024-09-21T15:00:00.000+00:00"),
+      detail: "skku toy project",
+      tags: ["tag1"],
+      project: null,
+      done: false,
+    },
+  ]);
+  const [groupedTodo, setGroupedTodo] = useState([]);
+
+  // TODO: api fetch 추가
+  useEffect(() => {
+    setGroupedTodo(groupByDate(todoList));
+  }, []);
 
   return (
     <div className="w-full h-screen flex justify-between">
@@ -46,9 +94,9 @@ export default function Home() {
         </div>
       </div>
       <div className="w-144 overflow-y-auto shrink-0 no-scrollbar">
-        <DateContainer />
-        <DateContainer />
-        <DateContainer />
+        {Object.keys(groupedTodo).map((date, idx) => (
+          <DateContainer key={idx} date={date} todoList={groupedTodo[date]} />
+        ))}
       </div>
       <div className="w-96 h-full flex-shrink-0 border-2">right</div>
     </div>

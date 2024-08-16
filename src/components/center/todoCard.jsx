@@ -7,13 +7,13 @@ export default function TodoCard({ title, done, detail, tags }) {
         <span className={`font-bold ${done && "line-through"}`}>{title}</span>
         <input
           type="checkbox"
-          checked={done}
+          defaultChecked={done}
           className="h-4 aspect-square text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
         />
       </div>
       <div>{detail}</div>
       <div className="flex flex-row-reverse gap-2">
-        {["태그1", "태그2", "태그3"].map((data, idx) => (
+        {tags.map((data, idx) => (
           <TagCard name={data} textSize={"text-sm"} />
         ))}
       </div>
