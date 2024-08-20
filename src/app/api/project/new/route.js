@@ -2,6 +2,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { connectToDB } from "@/utils/database";
 import Project from "@/models/project";
+import { NextResponse } from "next/server";
 
 /// /api/todo/new POST 요청
 /// [요약] 새로운 Project Document를 생성합니다.
@@ -47,7 +48,11 @@ export const POST = async (req) => {
     return new Response(newProject, { status: 201 });
   } catch (error) {
     console.log('[에러] /api/project/new POST 실패');
-    console.log(error);
+    console.log('에러 이름:', error.name);
+    console.log('에러 메세지:', error.message);
+    if (error.message.startsWith('E11000')) {
+      return NextResponse.json('Project with the same name already exists!', { status: 400 });
+    }
     return new Response('Failed to create new Project', { status: 500 });
   }
 }

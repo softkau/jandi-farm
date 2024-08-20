@@ -60,8 +60,7 @@ project 생성 엔드포인트
  * POST  
    `Project` 데이터 베이스에 `body` 내용을 기반으로 project를 생성  
    인증이 되지 않았을시 `401` 반환  
-   (현재 하나의 DB에 동일한 title을 가진 project가 둘 이상 존재할 수 없습니다  
-   이는 추후 수정될 예정입니다)
+   (업데이트: 이제 user 별 `title` 중복 검사가 이루어집니다. 따라서 다른 유저와의 동일한 `title` 값으로 충돌이 발생하지 않습니다)
 ```js
 body: {
   title: "title",
@@ -104,6 +103,38 @@ project 조회/수정/삭제 엔드포인트
  * GET  
    요청한 `id`를 가진 유저의 project를 조회하여 `Array`로 반환한다  
    다른 유저의 project는 `is_public`이 `true`인 경우만 반환한다
+
+## /api/user/[id]/tag
+`id`에 해당하는 유저의 tag를 조회 및 수정하는 엔드포인트  
+인증 유저와 일치해야만 이용 가능  
+요청이 성공 했을 때 `response.body`에는 (변경사항이 적용된) tag `Array`가 반환된다
+ * GET  
+   요청한 `id`를 가진 유저가 저장한 tag를 `Array`로 반환  
+   성공 시 응답코드는 `200`
+ * POST  
+   `request.body`의 `tags` 속성의 tag값들을 중복을 제거하여 UserDB에 저장  
+   성공 시 응답코드는 `200`
+   ```json
+   { // JSON 요청 예시 (User.data.tags에 'tag1', 'tag2', 'tag3'이 추가됨)
+    "tags": ["tag1", "tag2", "tag3"]
+   }
+   ```
+ * PUT  
+   `request.body`의 `tags` 배열 전체를 UserDB에 덮어씌워 저장  
+   성공 시 응답코드는 `200`
+   ```json
+   { // JSON 요청 예시 (User.data.tags가 ['tag1', 'tag2', 'tag3']이 됨)
+     "tags": ["tag1", "tag2", "tag3"]
+   }
+   ```
+ * DELETE  
+   `request.body`의 `tags` 배열에 포함된 tag값들을 UserDB에서 제거  
+   성공 시 응답코드는 `200`  
+   ```json
+   { // JSON 요청 예시 (User.data.tags에서 'tag1'만 제거됨)
+     "tags": ["tag1"]
+   }
+   ```
 
 # Next.js Generated Docs
 

@@ -13,6 +13,9 @@ const UserSchema = new Schema({
   },
   image: {
     type: String,
+  },
+  data: {
+    tags: [{ type: String, required: [true, 'null tag is not allowed'] }]
   }
 });
 

@@ -2,8 +2,11 @@
 
 /* 챗지피티야 고마워 */
 import { useState } from 'react';
+import { useSession, signIn, signOut } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
 
 const ApiTester = () => {
+  const { data: session } = useSession();
   const [method, setMethod] = useState('GET');
   const [url, setUrl] = useState('');
   const [body, setBody] = useState('');
@@ -76,6 +79,11 @@ const ApiTester = () => {
   return (
     <div className="m-1 p-1 bg-slate-200 outline outline-2 outline-slate-500 rounded-sm">
       <h1 className="font-bold">API Tester</h1>
+      {session?.user ? (
+        <Button className="mb-1 rounded-3xl" variant="destructive" onClick={signOut}>Sign Out</Button>
+      ) : (
+        <Button className="mb-1 rounded-3xl" onClick={signIn}>Sign In</Button>
+      )}
       <form
         className="p-1 bg-white rounded-lg relative"
         onSubmit={e => {

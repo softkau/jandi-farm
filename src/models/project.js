@@ -7,7 +7,6 @@ const ProjectSchema = new Schema({
   },
   title: {
     type: Schema.Types.String,
-    unique: [true, 'Project title must be unique!'],
     required: [true, 'title is required!']
   },
   due_date: {
@@ -24,6 +23,8 @@ const ProjectSchema = new Schema({
     required: function() { return this.is_public != undefined }
   }
 });
+
+ProjectSchema.index({owner: 1, title: 1}, {unique: true})
 
 // ensure model() is called once
 const Project = models.Project || model("Project", ProjectSchema);
