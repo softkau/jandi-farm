@@ -15,6 +15,7 @@ export default function ProjectCard({
         <div className="p-1 h-full aspect-square">
           <Image
             src={"/pen-icon.png"}
+            alt=""
             layout="responsive"
             width={1}
             height={1}
@@ -29,6 +30,7 @@ export default function ProjectCard({
           <div className="h-full aspect-square">
             <Image
               src={"/detail.png"}
+              alt=""
               layout="responsive"
               width={1}
               height={1}

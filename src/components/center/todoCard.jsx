@@ -14,7 +14,7 @@ export default function TodoCard({ title, done, detail, tags }) {
       <div>{detail}</div>
       <div className="flex flex-row-reverse gap-2">
         {tags.map((data, idx) => (
-          <TagCard name={data} textSize={"text-sm"} />
+          <TagCard key={idx} name={data} textSize={"text-sm"} />
         ))}
       </div>
     </div>
