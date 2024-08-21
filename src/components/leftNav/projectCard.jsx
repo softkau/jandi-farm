@@ -10,7 +10,7 @@ export default function ProjectCard({
     <div>
       <div
         className="h-10 w-full flex items-center p-1 cursor-pointer"
-        onClick={() => handleSelected(data, isFocused)}
+        onClick={() => handleSelected(data.title, isFocused)}
       >
         <div className="p-1 h-full aspect-square">
           <Image
@@ -24,7 +24,7 @@ export default function ProjectCard({
         <div
           className={`ml-2 mr-auto ${isFocused ? "font-bold" : "font-medium"}`}
         >
-          {data}
+          {data.title}
         </div>
         {isFocused ? (
           <div className="h-full aspect-square">
@@ -42,7 +42,12 @@ export default function ProjectCard({
           </div>
         )}
       </div>
-      {isFocused && <div className="h-36 bg-white rounded-md m-1">test</div>}
+      {isFocused && (
+        <div className="h-36 bg-white rounded-md m-1">
+          <div>{data.detail}</div>
+          <div>{data.due_date}</div>
+        </div>
+      )}
     </div>
   );
 }

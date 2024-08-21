@@ -86,7 +86,7 @@ export default function ProjectContainer({
       {projects.map((data, idx) => (
         <ProjectCard
           key={idx}
-          data={data.title}
+          data={data}
           isFocused={data.title == selected ? true : false}
           handleSelected={handleSelected}
         />
@@ -141,23 +141,25 @@ export default function ProjectContainer({
           </button>
         </div>
       )}
-      <div className="flex justify-center items-center p-2">
-        <button
-          className="h-10 w-full rounded-3xl border-2 p-1 border-gray-600 flex gap-2 justify-center items-center"
-          onClick={() => setShowForm(true)}
-        >
-          <div className="h-full aspect-square ">
-            <Image
-              alt=""
-              src={"/plus.png"}
-              layout="responsive"
-              width={1}
-              height={1}
-            />
-          </div>
-          <span>프로젝트 추가</span>
-        </button>
-      </div>
+      {!showForm && (
+        <div className="flex justify-center items-center p-2">
+          <button
+            className="h-10 w-full rounded-3xl border-2 p-1 border-gray-600 flex gap-2 justify-center items-center"
+            onClick={() => setShowForm(true)}
+          >
+            <div className="h-full aspect-square ">
+              <Image
+                alt=""
+                src={"/plus.png"}
+                layout="responsive"
+                width={1}
+                height={1}
+              />
+            </div>
+            <span>프로젝트 추가</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
