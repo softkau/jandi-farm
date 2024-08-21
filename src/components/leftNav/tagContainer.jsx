@@ -1,5 +1,8 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
 import TagCard from "./tagCard";
-import { TagBadge } from "@/components/pcw/new-todo-comp/tag-selector";
 
 export default function TagContainer({
   tags,
@@ -7,6 +10,9 @@ export default function TagContainer({
   selectedTags,
   setSelectedTags,
 }) {
+  const [showForm, setShowForm] = useState(false);
+  const [newTag, setNewTag] = useState("");
+
   const handleSelected = (tagName) => {
     const newSelected = new Set(selectedTags);
     if (newSelected.has(tagName)) {
@@ -15,6 +21,17 @@ export default function TagContainer({
       newSelected.add(tagName);
     }
     setSelectedTags(newSelected);
+  };
+
+  const handleAddTag = (e) => {
+    if (e.key === "Enter" && newTag.trim()) {
+      setTags([...tags, newTag.trim()]);
+      setNewTag("");
+      setShowForm(false);
+    } else if (e.key === "Escape") {
+      setNewTag("");
+      setShowForm(false);
+    }
   };
 
   return (
@@ -29,6 +46,28 @@ export default function TagContainer({
             handleSelected={handleSelected}
           />
         ))}
+        {showForm && (
+          <div
+            className={`rounded-lg border-2 border-gray-500 px-2 cursor-pointer`}
+          >
+            <input
+              type="text"
+              value={newTag}
+              className="w-24"
+              onChange={(e) => setNewTag(e.target.value)}
+              onKeyDown={handleAddTag}
+              autoFocus
+            />
+          </div>
+        )}
+        {!showForm && (
+          <div
+            className={`rounded-lg border-2 border-gray-500 cursor-pointer`}
+            onClick={() => setShowForm(true)}
+          >
+            <Image alt="" src={"/plus.png"} width="25" height="25" />
+          </div>
+        )}
       </div>
     </div>
   );
