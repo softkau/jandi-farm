@@ -9,7 +9,7 @@ export default function ProjectContainer({
 }) {
   const handleSelected = (projectName, isFocused) => {
     if (isFocused) {
-      setSelected("");
+      setSelected(null);
     } else {
       setSelected(projectName);
     }
