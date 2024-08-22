@@ -40,22 +40,46 @@ export default function ProjectContainer({
   };
 
   // 프로젝트 추가 핸들러
-  const handleAddProject = () => {
+  const handleAddProject = async () => {
     if (
       newProject.title.trim() &&
       newProject.detail.trim() &&
       newProject.due_date.trim()
     ) {
-      setProjects([...projects, newProject]);
-      setNewProject({
-        title: "",
-        detail: "",
-        due_date: "",
-        status: {
-          is_public: false,
-        },
-      });
-      setShowForm(false);
+      try {
+        const response = await fetch(`/api/project/new`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newProject),
+        });
+
+        if (!response) {
+          throw new Error("프로젝트 추가 실패");
+        }
+        setProjects([...projects, newProject]);
+        setNewProject({
+          title: "",
+          detail: "",
+          due_date: "",
+          status: {
+            is_public: false,
+          },
+        });
+        setShowForm(false);
+      } catch (error) {
+        console.log("프로젝트 추가 실패", error);
+        setNewProject({
+          title: "",
+          detail: "",
+          due_date: "",
+          status: {
+            is_public: false,
+          },
+        });
+        setShowForm(false);
+      }
     }
   };
 
