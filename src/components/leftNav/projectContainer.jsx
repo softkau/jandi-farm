@@ -11,11 +11,11 @@ export default function ProjectContainer({
   setSelected,
 }) {
   // selected 핸들러
-  const handleSelected = (projectName, isFocused) => {
+  const handleSelected = (projectId, isFocused) => {
     if (isFocused) {
       setSelected(null);
     } else {
-      setSelected(projectName);
+      setSelected(projectId);
     }
   };
 
@@ -111,7 +111,7 @@ export default function ProjectContainer({
         <ProjectCard
           key={idx}
           data={data}
-          isFocused={data.title == selected ? true : false}
+          isFocused={data._id == selected ? true : false}
           handleSelected={handleSelected}
         />
       ))}

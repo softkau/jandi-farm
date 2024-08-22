@@ -10,7 +10,10 @@ export default function ProjectCard({
     <div>
       <div
         className="h-10 w-full flex items-center p-1 cursor-pointer"
-        onClick={() => handleSelected(data.title, isFocused)}
+        onClick={() => {
+          handleSelected(data._id, isFocused);
+          console.log(data);
+        }}
       >
         <div className="p-1 h-full aspect-square">
           <Image
