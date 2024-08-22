@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import TagCard from "./tagCard";
 
@@ -10,6 +11,7 @@ export default function TagContainer({
   selectedTags,
   setSelectedTags,
 }) {
+  const { data: session } = useSession();
   const [showForm, setShowForm] = useState(false);
   const [newTag, setNewTag] = useState("");
 
@@ -23,11 +25,29 @@ export default function TagContainer({
     setSelectedTags(newSelected);
   };
 
-  const handleAddTag = (e) => {
+  const handleAddTag = async (e) => {
     if (e.key === "Enter" && newTag.trim()) {
-      setTags([...tags, newTag.trim()]);
-      setNewTag("");
-      setShowForm(false);
+      const trimmedTag = newTag.trim();
+      try {
+        const response = await fetch(`/api/user/${session.user.id}/tag`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tags: [trimmedTag] }),
+        });
+
+        if (!response.ok) {
+          throw new Error("태그 추가 실패");
+        }
+        setTags([...tags, newTag.trim()]);
+        setNewTag("");
+        setShowForm(false);
+      } catch (error) {
+        console.log("태그 추가 실패 : ", error);
+        setNewTag("");
+        setShowForm(false);
+      }
     } else if (e.key === "Escape") {
       setNewTag("");
       setShowForm(false);
