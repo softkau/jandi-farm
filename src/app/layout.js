@@ -1,6 +1,4 @@
 import "./globals.css";
-import Navigation from "@/components/navigation";
-import Detail from "@/components/detail";
 import AuthProvider from "@/components/AuthProvider";
 
 export const metadata = {
@@ -10,21 +8,6 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    // <html lang="en">
-    //   <body className="min-h-screen">
-    //     <div className="flex flex-col h-screen">
-    //       <AuthProvider>
-    //         <Navigation />
-    //         <div className="flex flex-1 overflow-hidden">
-    //           <main className="flex-1 flex justify-center border-4 border-indigo-400">
-    //             {children}
-    //           </main>
-    //           <Detail />
-    //         </div>
-    //       </AuthProvider>
-    //     </div>
-    //   </body>
-    // </html>
     <html lang="en">
       <body className="min-h-screen">
         <AuthProvider>{children}</AuthProvider>
