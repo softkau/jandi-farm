@@ -16,18 +16,26 @@ export default function TagContainer({
   const [newTag, setNewTag] = useState("");
 
   const handleSelected = (tagName) => {
-    const newSelected = new Set(selectedTags);
-    if (newSelected.has(tagName)) {
-      newSelected.delete(tagName);
+    //const newSelected = new Set(selectedTags);
+    //if (newSelected.has(tagName)) {
+    //  newSelected.delete(tagName);
+    //} else {
+    //  newSelected.add(tagName);
+    //}
+    if (selectedTags.includes(tagName)) {
+      setSelectedTags(selectedTags.filter(x => x !== tagName))
     } else {
-      newSelected.add(tagName);
+      setSelectedTags([...selectedTags, tagName])
     }
-    setSelectedTags(newSelected);
   };
 
   const handleAddTag = async (e) => {
     if (e.key === "Enter" && newTag.trim()) {
       const trimmedTag = newTag.trim();
+      if (tags.includes(trimmedTag)) {
+        alert(`태그 "${trimmedTag}"이(가) 이미 존재합니다`);
+        return;
+      }
       try {
         const response = await fetch(`/api/user/${session.user.id}/tag`, {
           method: "POST",
@@ -62,7 +70,7 @@ export default function TagContainer({
           <TagCard
             key={idx}
             name={data}
-            isSelected={selectedTags.has(data)}
+            isSelected={selectedTags.includes(data)}
             handleSelected={handleSelected}
           />
         ))}

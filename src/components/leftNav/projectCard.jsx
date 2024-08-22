@@ -1,5 +1,7 @@
 "use client";
 
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 // TODO : data 구체화하기
@@ -7,10 +9,14 @@ export default function ProjectCard({
   isFocused = false,
   data,
   handleSelected,
+  todoList
 }) {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
+
+  // 프로젝트에 남은 TODO 개수 계산
+  const leftTodo = todoList.filter(t => !t.status.done && t.project === data._id).length
 
   // 우클릭시 이벤트 발생
   const handleContextMenu = (e) => {
@@ -74,7 +80,7 @@ export default function ProjectCard({
           </div>
         ) : (
           <div className="h-full aspect-square flex items-center justify-center">
-            <span>3</span>
+            <span>{leftTodo}</span>
           </div>
         )}
       </div>
@@ -91,7 +97,7 @@ export default function ProjectCard({
       {isFocused && (
         <div className="h-36 bg-white rounded-md m-1">
           <div>{data.detail}</div>
-          <div>{data.due_date}</div>
+          <div>{format(data.due_date, "PPP", { locale: ko })}</div>
         </div>
       )}
     </div>

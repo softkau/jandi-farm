@@ -29,7 +29,7 @@ const TodoCalendar = ({ gs, className, viewMonth, decViewMonth, incViewMonth, ..
     {
       done: false,
       project: selectedProject,
-      tag: selectedTags
+      tags: selectedTags
     }
   );
 

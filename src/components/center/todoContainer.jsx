@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { compareAsc } from "date-fns";
 import DateContainer from "@/components/center/dateContainer";
+import { cn } from "@/lib/utils";
 
 function groupByDate(components) {
   return components.reduce((acc, component) => {
@@ -25,6 +26,7 @@ export default function TodoContainer({
   todoList,
   selectedTags,
   selectedProject,
+  className
 }) {
   const [groupedTodo, setGroupedTodo] = useState([]);
 
@@ -40,7 +42,7 @@ export default function TodoContainer({
   }, [selectedProject, selectedTags, todoList]);
 
   return (
-    <div className="w-144 overflow-y-auto shrink-0 no-scrollbar">
+    <div className={cn("w-144 overflow-y-auto shrink-0 no-scrollbar", className)}>
       {Object.keys(groupedTodo)
         .sort((a, b) => compareAsc(a, b))
         .map((date, idx) => (

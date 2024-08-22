@@ -29,7 +29,7 @@ const JandiCalendar = ({ gs, className, viewMonth, decViewMonth, incViewMonth, .
     {
       done: true,
       project: selectedProject,
-      tag: selectedTags
+      tags: selectedTags
     }
   );
 

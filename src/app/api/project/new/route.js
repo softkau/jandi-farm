@@ -45,7 +45,7 @@ export const POST = async (req) => {
       return new Response('Failed to create new Project', { status: 500 });
     }
 
-    return new Response(newProject, { status: 201 });
+    return NextResponse.json(newProject, { status: 201 });
   } catch (error) {
     console.log('[에러] /api/project/new POST 실패');
     console.log('에러 이름:', error.name);

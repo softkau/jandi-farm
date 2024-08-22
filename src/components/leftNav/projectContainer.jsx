@@ -9,6 +9,7 @@ export default function ProjectContainer({
   setProjects,
   selected,
   setSelected,
+  todoList,
 }) {
   // selected 핸들러
   const handleSelected = (projectId, isFocused) => {
@@ -31,6 +32,11 @@ export default function ProjectContainer({
           [name]: checked,
         },
       });
+    } else if (type === "date") {
+      setNewProject({
+        ...newProject,
+        [name]: new Date(value)
+      })
     } else {
       setNewProject({
         ...newProject,
@@ -43,8 +49,7 @@ export default function ProjectContainer({
   const handleAddProject = async () => {
     if (
       newProject.title.trim() &&
-      newProject.detail.trim() &&
-      newProject.due_date.trim()
+      newProject.detail.trim()
     ) {
       try {
         const response = await fetch(`/api/project/new`, {
@@ -55,10 +60,11 @@ export default function ProjectContainer({
           body: JSON.stringify(newProject),
         });
 
-        if (!response) {
+        if (!response.ok) {
           throw new Error("프로젝트 추가 실패");
         }
-        setProjects([...projects, newProject]);
+        const json = await response.json();
+        setProjects([...projects, { ...newProject, _id: json._id }]);
         setNewProject({
           title: "",
           detail: "",
@@ -111,7 +117,8 @@ export default function ProjectContainer({
         <ProjectCard
           key={idx}
           data={data}
-          isFocused={data._id == selected ? true : false}
+          todoList={todoList}
+          isFocused={data._id === selected ? true : false}
           handleSelected={handleSelected}
         />
       ))}

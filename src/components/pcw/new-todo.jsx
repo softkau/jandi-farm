@@ -107,7 +107,7 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
                     <SubHeader>Projects</SubHeader>
                     <div className="relative flex flex-row flex-grow">
                       <FormControl>
-                        <ProjectSelector projectList={["(없음)", ...projectList]} { ...field }/>
+                        <ProjectSelector projectList={["(없음)", ...projectList.map(x => x.title)]} { ...field }/>
                       </FormControl>
                       <VSeperator/>
                     </div>

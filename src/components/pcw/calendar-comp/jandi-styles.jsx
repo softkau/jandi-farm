@@ -7,7 +7,7 @@
  * @param {Object} filterOptions 필터 객체(필요한 속성만 정의할 것)
  * @param {boolean?} filterOptions.done Todo 완료 상태
  * @param {string?} filterOptions.project Project 필터
- * @param {[string]?} filterOptions.tag Tag 필터
+ * @param {[string]?} filterOptions.tags Tag 필터
  * @returns {Object} lvl0 ~ 4까지 반환해줍니다
  */
 const getJandiModifier = (todoList, first, last, filterOptions) => {
@@ -21,9 +21,9 @@ const getJandiModifier = (todoList, first, last, filterOptions) => {
     .filter(
       t => new Date(t?.due_date) >= trunc_first
         && new Date(t?.due_date) <= trunc_last
-        && (filterOptions?.done == null || t?.status.done === filterOptions?.done)
+        && (filterOptions?.done == null || t?.status?.done === filterOptions?.done)
         && (!filterOptions?.project || t?.project === filterOptions?.project)
-        && (filterOptions?.tag == null || filterOptions?.tag.every(v => t?.tag.includes(v)))
+        && (filterOptions?.tags == null || filterOptions?.tags.every(v => t?.tags.includes(v)))
     ).forEach(t => {
       jandi[new Date(new Date(t?.due_date).toDateString())]++
     });
@@ -46,13 +46,6 @@ const getJandiModifier = (todoList, first, last, filterOptions) => {
     lvl3: filterJandi(lvl3Limit, lvl4Limit).map(x => new Date(x)),
     lvl4: filterJandi(lvl4Limit, max + 1).map(x => new Date(x)),
   };
-  console.group("jandi levels")
-  console.log("lvl1: " + lvl1Limit)
-  console.log("lvl2: " + lvl2Limit)
-  console.log("lvl3: " + lvl3Limit)
-  console.log("lvl4: " + lvl4Limit)
-  console.groupEnd();
-  console.log(jandi)
 
   return modifiers;
 }
