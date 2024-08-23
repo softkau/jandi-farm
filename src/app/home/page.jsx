@@ -134,7 +134,7 @@ export default function Home() {
             todoList={todoList}
             selectedTags={selectedTags}
             selectedProject={selectedProject}
-            className="h-full"
+            className="w-full flex flex-col items-center h-full"
           />
         </div>
 
