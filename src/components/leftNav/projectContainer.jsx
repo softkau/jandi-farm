@@ -11,6 +11,22 @@ export default function ProjectContainer({
   setSelected,
   todoList,
 }) {
+  // 프로젝트 삭제 핸들러
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/api/project/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      setProjects((prevItems) => prevItems.filter((item) => item._id !== id));
+    } catch (error) {
+      console.log("삭제 실패", error);
+    }
+  };
+
   // selected 핸들러
   const handleSelected = (projectId, isFocused) => {
     if (isFocused) {
@@ -35,8 +51,8 @@ export default function ProjectContainer({
     } else if (type === "date") {
       setNewProject({
         ...newProject,
-        [name]: new Date(value)
-      })
+        [name]: new Date(value),
+      });
     } else {
       setNewProject({
         ...newProject,
@@ -47,10 +63,7 @@ export default function ProjectContainer({
 
   // 프로젝트 추가 핸들러
   const handleAddProject = async () => {
-    if (
-      newProject.title.trim() &&
-      newProject.detail.trim()
-    ) {
+    if (newProject.title.trim() && newProject.detail.trim()) {
       try {
         const response = await fetch(`/api/project/new`, {
           method: "POST",
@@ -120,6 +133,7 @@ export default function ProjectContainer({
           todoList={todoList}
           isFocused={data._id === selected ? true : false}
           handleSelected={handleSelected}
+          handleDeleteById={handleDelete}
         />
       ))}
       {showForm && (
