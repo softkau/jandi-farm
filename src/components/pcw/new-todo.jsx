@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -13,20 +13,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 
-import { format } from "date-fns"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
+import { format } from "date-fns";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 
-import CardWrapper from "./new-todo-comp/cardwrapper"
-import ProjectSelector from "./new-todo-comp/project-selector"
-import TagSelector from "./new-todo-comp/tag-selector"
-import DatePicker from "./new-todo-comp/datepicker"
+import CardWrapper from "./new-todo-comp/cardwrapper";
+import ProjectSelector from "./new-todo-comp/project-selector";
+import TagSelector from "./new-todo-comp/tag-selector";
+import DatePicker from "./new-todo-comp/datepicker";
 
-const SubHeader = ({ children }) => (<h2 className="text-xl font-bold mb-3">{children}</h2>)
-const VSeperator = () => (<Separator orientation="vertical" className="absolute right-0"/>)
+const SubHeader = ({ children }) => (
+  <h2 className="text-xl font-bold mb-3">{children}</h2>
+);
+const VSeperator = () => (
+  <Separator orientation="vertical" className="absolute right-0" />
+);
 
 const formSchema = z.object({
   title: z.string().min(1),
@@ -36,10 +40,9 @@ const formSchema = z.object({
   project: z.string(),
   status: z.object({
     done: z.boolean(),
-    is_public: z.boolean()
-  })
-})
-
+    is_public: z.boolean(),
+  }),
+});
 
 const NewTodo = ({ gs = placeholder, className, unmount }) => {
   const {
@@ -48,53 +51,57 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
     selectedProject,
     todoList,
     projectList,
-    tagList
+    tagList,
   } = gs;
-  console.log("%crendering NewTodo", 'background-color: red; color: white')
+  console.log("%crendering NewTodo", "background-color: red; color: white");
 
   const form = useForm({
     defaultValues: {
-      title: '',
-      detail: '',
+      title: "",
+      detail: "",
       due_date: focusedDate,
       tag: selectedTags,
       project: selectedProject,
       status: {
         done: false,
-        is_public: false
-      }
+        is_public: false,
+      },
     },
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(formSchema),
   });
 
   const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (values) => {
+<<<<<<< HEAD
     if (!projectList.find(x => x.title === values.project)) {
+=======
+    if (!projectList.find((x) => x.title === values.project)) {
+>>>>>>> hotfix/center-ui-fix
       values.project = null;
     }
-    values.due_date = format(values.due_date, 'P');
+    values.due_date = format(values.due_date, "P");
 
-    console.log(values)
+    console.log(values);
 
     setSubmitting(true);
     try {
       const res = await fetch("/api/todo/new", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(values)
+        body: JSON.stringify(values),
       });
       console.log(res);
     } catch (error) {
       console.error(error);
     }
     setSubmitting(false);
-  }
+  };
 
   return (
-    <CardWrapper title="새 일정 추가하기" className={ className }>
+    <CardWrapper title="새 일정 추가하기" className={className}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex space-x-4 mb-3">
@@ -107,9 +114,15 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
                     <SubHeader>Projects</SubHeader>
                     <div className="relative flex flex-row flex-grow">
                       <FormControl>
-                        <ProjectSelector projectList={["(없음)", ...projectList.map(x => x.title)]} { ...field }/>
+                        <ProjectSelector
+                          projectList={[
+                            "(없음)",
+                            ...projectList.map((x) => x.title),
+                          ]}
+                          {...field}
+                        />
                       </FormControl>
-                      <VSeperator/>
+                      <VSeperator />
                     </div>
                   </div>
                 </FormItem>
@@ -125,9 +138,9 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
                     <SubHeader>Tags</SubHeader>
                     <div className="relative flex flex-row flex-grow">
                       <FormControl>
-                        <TagSelector tagList={tagList} { ...field }/>
+                        <TagSelector tagList={tagList} {...field} />
                       </FormControl>
-                      <VSeperator/>
+                      <VSeperator />
                     </div>
                   </div>
                 </FormItem>
@@ -147,10 +160,10 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
                         className="border-none
                                    focus-visible:ring-offset-0
                                    focus-visible:ring-inset"
-                        { ...field }
+                        {...field}
                       />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -163,11 +176,10 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
                       <textarea
                         placeholder="내용..."
                         className="w-full h-40 rounded-md px-3 py-2 text-sm"
-                        { ...field }
-                      >
-                      </textarea>
+                        {...field}
+                      ></textarea>
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -177,28 +189,45 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <DatePicker placeholder="마감일을 지정해주십시오..." { ...field } required/>
+                      <DatePicker
+                        placeholder="마감일을 지정해주십시오..."
+                        {...field}
+                        required
+                      />
                     </FormControl>
-                    <FormMessage/>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
           </div>
           <div className="flex flex-row-reverse gap-3">
-            {
-              !submitting ? (
-                <Button className="rounded-3xl" type="submit" variant="pcw_create">할 일 등록</Button>
-              ) : (
-                <Button disabled><Loader2 className="mr-2 h-4 w-4 animate-spin"/>등록 중...</Button>
-              )
-            }
-            <Button className="rounded-3xl" variant="destructive" onClick={unmount}>취소</Button>
+            {!submitting ? (
+              <Button
+                className="rounded-3xl"
+                type="submit"
+                variant="pcw_create"
+              >
+                할 일 등록
+              </Button>
+            ) : (
+              <Button disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                등록 중...
+              </Button>
+            )}
+            <Button
+              className="rounded-3xl"
+              variant="destructive"
+              onClick={unmount}
+            >
+              취소
+            </Button>
           </div>
         </form>
       </Form>
     </CardWrapper>
-  )
-}
+  );
+};
 
-export default NewTodo
+export default NewTodo;

@@ -46,7 +46,7 @@ export default function TodoContainer({
       {Object.keys(groupedTodo)
         .sort((a, b) => compareAsc(a, b))
         .map((date, idx) => (
-          <DateContainer key={idx} date={date} todoList={groupedTodo[date]} />
+          <DateContainer key={idx} date={date} todoList={groupedTodo[date]} className="w-144" />
         ))}
     </div>
   );
