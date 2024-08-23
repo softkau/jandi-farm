@@ -70,7 +70,7 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (values) => {
-    if (!projectList.find(x => x === values.project)) {
+    if (!projectList.find(x => x.title === values.project)) {
       values.project = null;
     }
     values.due_date = format(values.due_date, 'P');
