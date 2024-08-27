@@ -9,7 +9,7 @@ import CalendarView from "@/components/pcw/calendar-view";
 import NewTodo from "@/components/pcw/new-todo";
 import UserInfo from "@/components/pcw/user-info";
 import { Button } from "@/components/ui/button";
-import { LogIn, Plus } from "lucide-react";
+import { LogIn, Plus, Sprout } from "lucide-react";
 import { CSSTransition } from "react-transition-group";
 
 // import { ObjectId } from "bson";
@@ -106,15 +106,13 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen flex justify-between">
-      <div className="w-80 h-full flex-shrink-0 flex flex-col bg-gray-100">
+      <div className="w-80 h-full flex-shrink-0 flex flex-col bg-zinc-50">
         <div className="h-20 bg-green-200 flex justify-center items-center">
-          logo
+          <Sprout size={35}/>
+          <span className="font-extrabold text-3xl">&nbsp;JANDI FARM&nbsp;</span>
+          <Sprout size={35}/>
         </div>
         <div className="h-full flex flex-col justify-between">
-          {/*
-          
-          
-          */}
           <ProjectContainer
             projects={projectList}
             setProjects={setProjectList}
@@ -178,9 +176,9 @@ export default function Home() {
       </div>
 
       <div className="w-[280px] h-full relative bg-zinc-50">
-        {session?.user ? (
+        <UserInfo session={session} />
+        {session?.user && (
           <>
-            <UserInfo />
             <CalendarView
               gs={{
                 projectList: projectList,
@@ -193,14 +191,6 @@ export default function Home() {
               }}
             />
           </>
-        ) : (
-          <div>
-            <Button variant="ghost" onClick={signIn}>
-              <LogIn />
-              로그인
-            </Button>
-          </div>
-          
         )}
       </div>
     </div>

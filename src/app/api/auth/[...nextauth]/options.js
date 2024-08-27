@@ -37,10 +37,10 @@ export const authOptions = {
 
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      // go back to root when signIn or signOut.
-      return baseUrl;
-    },
+    //async redirect({ url, baseUrl }) {
+    //  // go back to root when signIn or signOut.
+    //  return baseUrl;
+    //},
     async signIn({ profile }) {
       try {
         // connect to db

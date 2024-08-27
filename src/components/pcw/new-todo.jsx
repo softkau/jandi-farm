@@ -103,7 +103,7 @@ const NewTodo = React.forwardRef(({ gs = placeholder, className, unmount }, ref)
               name="project"
               render={({ field }) => (
                 <FormItem>
-                  <div className="w-32 h-full flex flex-col">
+                  <div className="w-36 h-full flex flex-col">
                     <SubHeader>Projects</SubHeader>
                     <div className="relative flex flex-row flex-grow">
                       <FormControl>
@@ -121,7 +121,7 @@ const NewTodo = React.forwardRef(({ gs = placeholder, className, unmount }, ref)
               name="tag"
               render={({ field }) => (
                 <FormItem>
-                  <div className="w-32 h-full flex flex-col">
+                  <div className="w-40 h-full flex flex-col">
                     <SubHeader>Tags</SubHeader>
                     <div className="relative flex flex-row flex-grow">
                       <FormControl>
@@ -134,7 +134,7 @@ const NewTodo = React.forwardRef(({ gs = placeholder, className, unmount }, ref)
               )}
             />
 
-            <div className="w-64">
+            <div className="w-72">
               <SubHeader>Detail</SubHeader>
               <FormField
                 control={form.control}

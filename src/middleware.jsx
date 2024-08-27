@@ -1,3 +1,3 @@
-export { default } from "next-auth/middleware";
+export { default } from "next-auth/middleware"
 
-export const config = { matcher: ["/todo", "/profile", "/home"] };
+export const config = { matcher: ["/((?!api|static|favicon.ico).*)"] };

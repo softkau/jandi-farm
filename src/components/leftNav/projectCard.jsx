@@ -65,7 +65,7 @@ export default function ProjectCard({
   return (
     <div>
       <div
-        className="h-10 w-full flex items-center p-1 cursor-pointer select-none transition-all hover:bg-white/70"
+        className="h-10 w-full flex items-center p-1 cursor-pointer select-none transition-all hover:bg-zinc-200/70"
         onClick={() => handleSelected(data._id, isFocused)}
         onContextMenu={handleContextMenu}
       >
