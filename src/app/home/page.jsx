@@ -3,7 +3,7 @@
 import ProjectContainer from "@/components/leftNav/projectContainer";
 import TagContainer from "@/components/leftNav/tagContainer";
 import TodoContainer from "@/components/center/todoContainer";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import CalendarView from "@/components/pcw/calendar-view";
 import NewTodo from "@/components/pcw/new-todo";
@@ -28,6 +28,7 @@ export default function Home() {
 
   const [showNewTodo, setShowNewTodo] = useState(false);
   const [showNewTodoBtn, setShowNewTodoBtn] = useState(true);
+  const newTodoRef = useRef(null);
 
   // 프로젝트 fetch
   useEffect(() => {
@@ -154,6 +155,7 @@ export default function Home() {
         )}
         <CSSTransition
           in={showNewTodo}
+          nodeRef={newTodoRef}
           timeout={200}
           classNames="todo-new"
           unmountOnExit
@@ -161,6 +163,7 @@ export default function Home() {
           onExited={() => setShowNewTodoBtn(true)}
         >
           <NewTodo
+            ref={newTodoRef}
             gs={{
               projectList: projectList,
               selectedProject: selectedProject,
