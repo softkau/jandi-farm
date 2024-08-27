@@ -1,5 +1,6 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import ProjectCard from "./projectCard";
 import Image from "next/image";
 import { useState } from "react";
@@ -229,15 +230,7 @@ export default function ProjectContainer({
             className="h-10 w-full rounded-3xl border-2 p-1 border-gray-600 flex gap-2 justify-center items-center"
             onClick={() => setShowForm(true)}
           >
-            <div className="h-full aspect-square ">
-              <Image
-                alt=""
-                src={"/plus.png"}
-                layout="responsive"
-                width={1}
-                height={1}
-              />
-            </div>
+            <Plus />
             <span>프로젝트 추가</span>
           </button>
         </div>

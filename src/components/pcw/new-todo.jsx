@@ -193,7 +193,7 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
                 <Button disabled><Loader2 className="mr-2 h-4 w-4 animate-spin"/>등록 중...</Button>
               )
             }
-            <Button className="rounded-3xl" variant="destructive" onClick={unmount}>취소</Button>
+            <Button className="rounded-3xl" variant="destructive" onClick={(e)=>{e.preventDefault(); unmount();}}>취소</Button>
           </div>
         </form>
       </Form>

@@ -4,11 +4,13 @@ import ProjectContainer from "@/components/leftNav/projectContainer";
 import TagContainer from "@/components/leftNav/tagContainer";
 import TodoContainer from "@/components/center/todoContainer";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import CalendarView from "@/components/pcw/calendar-view";
 import NewTodo from "@/components/pcw/new-todo";
+import UserInfo from "@/components/pcw/user-info";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { LogIn, Plus } from "lucide-react";
+import { CSSTransition } from "react-transition-group";
 
 // import { ObjectId } from "bson";
 
@@ -25,6 +27,7 @@ export default function Home() {
   const [focusedDate, setFocusedDate] = useState(new Date());
 
   const [showNewTodo, setShowNewTodo] = useState(false);
+  const [showNewTodoBtn, setShowNewTodoBtn] = useState(true);
 
   // 프로젝트 fetch
   useEffect(() => {
@@ -138,7 +141,25 @@ export default function Home() {
           />
         </div>
 
-        {showNewTodo ? (
+        {showNewTodoBtn && (
+          <Button
+            variant="pcw_create"
+            className="animate-fade-in absolute shadow-md w-[50px] h-[50px] p-0 right-1 bottom-1 rounded-full"
+            onClick={() => {
+              setShowNewTodo(true);
+            }}
+          >
+            <Plus className="animate-chevron-spin" />
+          </Button>
+        )}
+        <CSSTransition
+          in={showNewTodo}
+          timeout={200}
+          classNames="todo-new"
+          unmountOnExit
+          onEnter={() => setShowNewTodoBtn(false)}
+          onExited={() => setShowNewTodoBtn(true)}
+        >
           <NewTodo
             gs={{
               projectList: projectList,
@@ -148,35 +169,36 @@ export default function Home() {
               focusedDate: focusedDate,
             }}
             className="absolute right-1 bottom-1"
-            unmount={() => {
-              setShowNewTodo(false);
-            }}
+            unmount={() => { setShowNewTodo(false); }}
           />
-        ) : (
-          <Button
-            variant="pcw_create"
-            className="absolute shadow-md w-[50px] h-[50px] p-0 right-1 bottom-1 rounded-full"
-            onClick={() => {
-              setShowNewTodo(true);
-            }}
-          >
-            <Plus />
-          </Button>
-        )}
+        </CSSTransition>
       </div>
 
       <div className="w-[280px] h-full relative bg-zinc-50">
-        <CalendarView
-          gs={{
-            projectList: projectList,
-            selectedProject: selectedProject,
-            tagList: tagList,
-            selectedTags: selectedTags,
-            todoList: todoList,
-            focusedDate: focusedDate,
-            setFocusedDate: setFocusedDate,
-          }}
-        />
+        {session?.user ? (
+          <>
+            <UserInfo />
+            <CalendarView
+              gs={{
+                projectList: projectList,
+                selectedProject: selectedProject,
+                tagList: tagList,
+                selectedTags: selectedTags,
+                todoList: todoList,
+                focusedDate: focusedDate,
+                setFocusedDate: setFocusedDate,
+              }}
+            />
+          </>
+        ) : (
+          <div>
+            <Button variant="ghost" onClick={signIn}>
+              <LogIn />
+              로그인
+            </Button>
+          </div>
+          
+        )}
       </div>
     </div>
   );
