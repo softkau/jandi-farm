@@ -64,7 +64,7 @@ module.exports = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
-        },
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,10 +80,25 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "chevron-spin-180": {
+          from: {
+            transform: 'rotate(-180deg)',
+            color: 'theme(colors.transparent)'
+          },
+          to: {
+            transform: 'rotate(0deg)'
+          }
+        },
+        "fade-in": {
+          from: { opacity: 0 },
+          to: { opacity: 1 }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "chevron-spin": "chevron-spin-180 0.4s ease-out",
+        "fade-in": "fade-in 0.4s ease-out"
       },
     },
   },

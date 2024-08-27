@@ -1,5 +1,6 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import ProjectCard from "./projectCard";
 import Image from "next/image";
 import { useState } from "react";
@@ -10,7 +11,60 @@ export default function ProjectContainer({
   selected,
   setSelected,
   todoList,
+  setTodoList,
 }) {
+  // 프로젝트 삭제 핸들러
+
+  const handleDelete = async (id) => {
+    try {
+      // 프로젝트 삭제 전 소속된 todo 먼저 불러오기
+      const todoResponse = await fetch(`/api/project/${id}/todo`, {
+        method: "GET",
+      });
+      if (!todoResponse.ok) {
+        throw new Error("todo 연결 실패");
+      }
+
+      // 프로젝트 삭제 요청
+      const projectResponse = await fetch(`/api/project/${id}`, {
+        method: "DELETE",
+      });
+      if (!projectResponse.ok) {
+        throw new Error("프로젝트 연결 실패");
+      }
+
+      // 삭제한 프로젝트 state 업데이트
+      setProjects((prevItems) => prevItems.filter((item) => item._id !== id));
+
+      // 소속된 todo 삭제 요청
+      const todos = await todoResponse.json();
+      // 삭제 요청 실패한 todo
+      const failedTodos = [];
+      // 각 todo에 대해서 삭제 요청
+      await Promise.all(
+        todos.map(async (todo) => {
+          const deleteTodoResponse = await fetch(`/api/todo/${todo._id}`, {
+            method: "DELETE",
+          });
+
+          if (!deleteTodoResponse.ok) {
+            failedTodos.push(todo._id);
+            console.error(`삭제 실패 ${todo._id}`);
+          }
+        })
+      );
+
+      // 삭제 실패한 todo 제외하고 로컬 state에 반영
+      setTodoList((prevTodoList) =>
+        prevTodoList.filter(
+          (todo) => todo.project !== id || failedTodos.includes(todo._id)
+        )
+      );
+    } catch (error) {
+      console.log("삭제 실패", error);
+    }
+  };
+
   // selected 핸들러
   const handleSelected = (projectId, isFocused) => {
     if (isFocused) {
@@ -35,8 +89,8 @@ export default function ProjectContainer({
     } else if (type === "date") {
       setNewProject({
         ...newProject,
-        [name]: new Date(value)
-      })
+        [name]: new Date(value),
+      });
     } else {
       setNewProject({
         ...newProject,
@@ -47,10 +101,7 @@ export default function ProjectContainer({
 
   // 프로젝트 추가 핸들러
   const handleAddProject = async () => {
-    if (
-      newProject.title.trim() &&
-      newProject.detail.trim()
-    ) {
+    if (newProject.title.trim() && newProject.detail.trim()) {
       try {
         const response = await fetch(`/api/project/new`, {
           method: "POST",
@@ -120,6 +171,7 @@ export default function ProjectContainer({
           todoList={todoList}
           isFocused={data._id === selected ? true : false}
           handleSelected={handleSelected}
+          handleDeleteById={handleDelete}
         />
       ))}
       {showForm && (
@@ -178,15 +230,7 @@ export default function ProjectContainer({
             className="h-10 w-full rounded-3xl border-2 p-1 border-gray-600 flex gap-2 justify-center items-center"
             onClick={() => setShowForm(true)}
           >
-            <div className="h-full aspect-square ">
-              <Image
-                alt=""
-                src={"/plus.png"}
-                layout="responsive"
-                width={1}
-                height={1}
-              />
-            </div>
+            <Plus />
             <span>프로젝트 추가</span>
           </button>
         </div>

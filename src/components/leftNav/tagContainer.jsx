@@ -15,6 +15,24 @@ export default function TagContainer({
   const [showForm, setShowForm] = useState(false);
   const [newTag, setNewTag] = useState("");
 
+  const handleDelete = async (name) => {
+    try {
+      const response = await fetch(`/api/user/${session.user.id}/tag`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tags: [name] }),
+      });
+      if (!response.ok) {
+        throw new Error("태그 삭제 실패");
+      }
+      setTags((prevItems) => prevItems.filter((item) => item !== name));
+    } catch (error) {
+      console.log("태그 삭제 실패 : ", error);
+    }
+  };
+
   const handleSelected = (tagName) => {
     //const newSelected = new Set(selectedTags);
     //if (newSelected.has(tagName)) {
@@ -23,9 +41,9 @@ export default function TagContainer({
     //  newSelected.add(tagName);
     //}
     if (selectedTags.includes(tagName)) {
-      setSelectedTags(selectedTags.filter(x => x !== tagName))
+      setSelectedTags(selectedTags.filter((x) => x !== tagName));
     } else {
-      setSelectedTags([...selectedTags, tagName])
+      setSelectedTags([...selectedTags, tagName]);
     }
   };
 
@@ -72,6 +90,7 @@ export default function TagContainer({
             name={data}
             isSelected={selectedTags.includes(data)}
             handleSelected={handleSelected}
+            handleDeleteByName={handleDelete}
           />
         ))}
         {showForm && (
