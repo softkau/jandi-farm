@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import TodoCard from "./todoCard";
 import { format } from "date-fns";
 
@@ -11,11 +12,11 @@ function DateDivider({ date }) {
   );
 }
 
-export default function DateContainer({ date, todoList }) {
+export default function DateContainer({ date, todoList, className }) {
   const handleDone = (id) => {};
 
   return (
-    <div className="w-full">
+    <div className={cn("w-full", className)}>
       <DateDivider date={format(date, `yyyy.MM.dd`)} />
       <div className="w-full px-12 pb-12 flex flex-col items-center gap-4">
         {todoList.map((data, idx) => (

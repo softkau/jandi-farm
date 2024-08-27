@@ -6,16 +6,22 @@ export default function TagCard({
   name,
   isSelected,
   handleSelected = () => {},
+  handleDeleteByName,
   textSize,
 }) {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
 
+  const handleDelete = (name) => {
+    handleDeleteByName(name);
+    setShowMenu(false);
+  };
+
   // 우클릭시 이벤트 발생
   const handleContextMenu = (e) => {
     e.preventDefault();
-    setMenuPosition({ x: e.pageX, y: e.pageY });
+    setMenuPosition({ x: e.pageX, y: e.pageY - 80 });
     setShowMenu(true);
   };
 
@@ -59,7 +65,12 @@ export default function TagCard({
           style={{ top: menuPosition.y, left: menuPosition.x }}
         >
           <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">수정</li>
-          <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">삭제</li>
+          <li
+            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+            onClick={() => handleDelete(name)}
+          >
+            삭제
+          </li>
         </ul>
       )}
     </div>

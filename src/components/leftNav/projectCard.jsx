@@ -2,21 +2,27 @@
 
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { ChevronUp, Folder, FolderOpen } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+
 // TODO : data 구체화하기
 export default function ProjectCard({
   isFocused = false,
   data,
   handleSelected,
-  todoList
+  handleEditById,
+  handleDeleteById,
+  todoList,
 }) {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
 
   // 프로젝트에 남은 TODO 개수 계산
-  const leftTodo = todoList.filter(t => !t.status.done && t.project === data._id).length
+  const leftTodo = todoList.filter(
+    (t) => !t.status.done && t.project === data._id
+  ).length;
 
   // 우클릭시 이벤트 발생
   const handleContextMenu = (e) => {
@@ -37,6 +43,15 @@ export default function ProjectCard({
     }
   };
 
+  const handleEdit = () => {
+    setShowMenu(false);
+  };
+
+  const handleDelete = (id) => {
+    handleDeleteById(id);
+    setShowMenu(false);
+  };
+
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     document.addEventListener("keydown", handleEscKey);
@@ -50,38 +65,20 @@ export default function ProjectCard({
   return (
     <div>
       <div
-        className="h-10 w-full flex items-center p-1 cursor-pointer"
+        className="h-10 w-full flex items-center p-1 cursor-pointer select-none transition-all hover:bg-white/70"
         onClick={() => handleSelected(data._id, isFocused)}
         onContextMenu={handleContextMenu}
       >
-        <div className="p-1 h-full aspect-square">
-          <Image
-            src={"/pen-icon.png"}
-            alt=""
-            layout="responsive"
-            width={1}
-            height={1}
-          />
-        </div>
+        {isFocused ? (<FolderOpen />) : (<Folder />)}
         <div
-          className={`ml-2 mr-auto ${isFocused ? "font-bold" : "font-medium"}`}
+          className={`ml-2 mr-auto flex-grow ${isFocused ? "font-bold" : "font-medium"}`}
         >
           {data.title}
         </div>
         {isFocused ? (
-          <div className="h-full aspect-square">
-            <Image
-              src={"/detail.png"}
-              alt=""
-              layout="responsive"
-              width={1}
-              height={1}
-            />
-          </div>
+            <ChevronUp className="animate-chevron-spin" />
         ) : (
-          <div className="h-full aspect-square flex items-center justify-center">
-            <span>{leftTodo}</span>
-          </div>
+          <span>{leftTodo}</span>
         )}
       </div>
       {showMenu && (
@@ -90,8 +87,18 @@ export default function ProjectCard({
           className="absolute bg-white shadow-lg border rounded-md"
           style={{ top: menuPosition.y, left: menuPosition.x }}
         >
-          <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">수정</li>
-          <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">삭제</li>
+          <li
+            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+            onClick={handleEdit}
+          >
+            수정
+          </li>
+          <li
+            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+            onClick={() => handleDelete(data._id)}
+          >
+            삭제
+          </li>
         </ul>
       )}
       {isFocused && (

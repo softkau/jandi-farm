@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -41,7 +41,7 @@ const formSchema = z.object({
 })
 
 
-const NewTodo = ({ gs = placeholder, className, unmount }) => {
+const NewTodo = React.forwardRef(({ gs = placeholder, className, unmount }, ref) => {
   const {
     focusedDate,
     selectedTags,
@@ -94,7 +94,7 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
   }
 
   return (
-    <CardWrapper title="새 일정 추가하기" className={ className }>
+    <CardWrapper title="새 일정 추가하기" className={ className } ref={ref}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex space-x-4 mb-3">
@@ -193,12 +193,12 @@ const NewTodo = ({ gs = placeholder, className, unmount }) => {
                 <Button disabled><Loader2 className="mr-2 h-4 w-4 animate-spin"/>등록 중...</Button>
               )
             }
-            <Button className="rounded-3xl" variant="destructive" onClick={unmount}>취소</Button>
+            <Button className="rounded-3xl" variant="destructive" onClick={(e)=>{e.preventDefault(); unmount();}}>취소</Button>
           </div>
         </form>
       </Form>
     </CardWrapper>
   )
-}
+})
 
 export default NewTodo

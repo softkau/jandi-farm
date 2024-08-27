@@ -3,12 +3,14 @@
 import ProjectContainer from "@/components/leftNav/projectContainer";
 import TagContainer from "@/components/leftNav/tagContainer";
 import TodoContainer from "@/components/center/todoContainer";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import CalendarView from "@/components/pcw/calendar-view";
 import NewTodo from "@/components/pcw/new-todo";
+import UserInfo from "@/components/pcw/user-info";
 import { Button } from "@/components/ui/button";
-import { Plus } from 'lucide-react';
+import { LogIn, Plus } from "lucide-react";
+import { CSSTransition } from "react-transition-group";
 
 // import { ObjectId } from "bson";
 
@@ -25,6 +27,8 @@ export default function Home() {
   const [focusedDate, setFocusedDate] = useState(new Date());
 
   const [showNewTodo, setShowNewTodo] = useState(false);
+  const [showNewTodoBtn, setShowNewTodoBtn] = useState(true);
+  const newTodoRef = useRef(null);
 
   // 프로젝트 fetch
   useEffect(() => {
@@ -33,15 +37,19 @@ export default function Home() {
         try {
           const response = await fetch(`/api/user/${session.user.id}/project`);
           const json = await response.json();
-          setProjectList(json.map(project => { return {
-            _id: project._id,
-            title: project.title,
-            detail: project.detail,
-            due_date: new Date(project.due_date),
-            status: {
-              is_public: project.is_public
-            }
-          }}));
+          setProjectList(
+            json.map((project) => {
+              return {
+                _id: project._id,
+                title: project.title,
+                detail: project.detail,
+                due_date: new Date(project.due_date),
+                status: {
+                  is_public: project.is_public,
+                },
+              };
+            })
+          );
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -73,17 +81,21 @@ export default function Home() {
         try {
           const response = await fetch(`/api/user/${session.user.id}/todo`);
           const json = await response.json();
-          setTodoList(json.map(todo => { return {
-            title: todo.title,
-            detail: todo.detail,
-            due_date: new Date(todo.due_date),
-            tags: todo.tags,
-            project: todo.project,
-            status: {
-              done: todo.done,
-              is_public: todo.is_public
-            }
-          }}));
+          setTodoList(
+            json.map((todo) => {
+              return {
+                title: todo.title,
+                detail: todo.detail,
+                due_date: new Date(todo.due_date),
+                tags: todo.tags,
+                project: todo.project,
+                status: {
+                  done: todo.done,
+                  is_public: todo.is_public,
+                },
+              };
+            })
+          );
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -109,8 +121,9 @@ export default function Home() {
             selected={selectedProject}
             setSelected={setSelectedProject}
             todoList={todoList}
+            setTodoList={setTodoList}
           />
-          
+
           <TagContainer
             tags={tagList}
             setTags={setTagList}
@@ -125,48 +138,70 @@ export default function Home() {
             todoList={todoList}
             selectedTags={selectedTags}
             selectedProject={selectedProject}
-            className="h-full"
+            className="w-full flex flex-col items-center h-full"
           />
         </div>
-        
-        {
-          showNewTodo ? (
-            <NewTodo
+
+        {showNewTodoBtn && (
+          <Button
+            variant="pcw_create"
+            className="animate-fade-in absolute shadow-md w-[50px] h-[50px] p-0 right-1 bottom-1 rounded-full"
+            onClick={() => {
+              setShowNewTodo(true);
+            }}
+          >
+            <Plus className="animate-chevron-spin" />
+          </Button>
+        )}
+        <CSSTransition
+          in={showNewTodo}
+          nodeRef={newTodoRef}
+          timeout={200}
+          classNames="todo-new"
+          unmountOnExit
+          onEnter={() => setShowNewTodoBtn(false)}
+          onExited={() => setShowNewTodoBtn(true)}
+        >
+          <NewTodo
+            ref={newTodoRef}
+            gs={{
+              projectList: projectList,
+              selectedProject: selectedProject,
+              tagList: tagList,
+              selectedTags: selectedTags,
+              focusedDate: focusedDate,
+            }}
+            className="absolute right-1 bottom-1"
+            unmount={() => { setShowNewTodo(false); }}
+          />
+        </CSSTransition>
+      </div>
+
+      <div className="w-[280px] h-full relative bg-zinc-50">
+        {session?.user ? (
+          <>
+            <UserInfo />
+            <CalendarView
               gs={{
                 projectList: projectList,
                 selectedProject: selectedProject,
                 tagList: tagList,
                 selectedTags: selectedTags,
-                focusedDate: focusedDate
+                todoList: todoList,
+                focusedDate: focusedDate,
+                setFocusedDate: setFocusedDate,
               }}
-              className="absolute right-1 bottom-1"
-              unmount={()=>{setShowNewTodo(false)}}
             />
-          ) : (
-            <Button
-              variant="pcw_create"
-              className="absolute shadow-md w-[50px] h-[50px] p-0 right-1 bottom-1 rounded-full"
-              onClick={()=>{setShowNewTodo(true)}}
-            >
-              <Plus />
+          </>
+        ) : (
+          <div>
+            <Button variant="ghost" onClick={signIn}>
+              <LogIn />
+              로그인
             </Button>
-          )
-        }
-
-      </div>
-      
-      <div className="w-[280px] h-full relative bg-zinc-50">
-        <CalendarView
-          gs={{
-            projectList: projectList,
-            selectedProject: selectedProject,
-            tagList: tagList,
-            selectedTags: selectedTags,
-            todoList: todoList,
-            focusedDate: focusedDate,
-            setFocusedDate: setFocusedDate
-          }}
-        />
+          </div>
+          
+        )}
       </div>
     </div>
   );
