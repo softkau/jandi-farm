@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { connectToDB } from "@/utils/database";
 import Todo from "@/models/todo";
 import Project from "@/models/project";
+import { NextResponse } from "next/server";
 
 /// /api/todo/new POST 요청
 /// [요약] 새로운 Todo Document를 생성합니다.
@@ -68,7 +69,7 @@ export const POST = async (req) => {
       return new Response('Failed to create new Todo List', { status: 500 });
     } 
 
-    return new Response(newTodo, { status: 201 });
+    return NextResponse.json(docSaved, { status: 201 });
   } catch (error) {
     console.log('[에러] /api/todo/new POST 실패');
     console.log(error);

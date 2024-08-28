@@ -54,7 +54,7 @@ const PcwTest = () => {
   const [focusedDate, setFocusedDate] = useState(new Date());
 
   useEffect(() => {
-    setTodoList(generateTodos(200, new Date(2024, 0, 1), new Date(2024, 12, 0)));
+    setTodoList(generateTodos(200, new Date(2024, 7, 1), new Date(2024, 8, 31)));
   }, []);
 
   const placeholder = {

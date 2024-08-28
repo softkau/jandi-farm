@@ -11,6 +11,7 @@ import UserInfo from "@/components/pcw/user-info";
 import { Button } from "@/components/ui/button";
 import { LogIn, Plus, Sprout } from "lucide-react";
 import { CSSTransition } from "react-transition-group";
+import { convertTodoFromResponseJSON } from "@/components/pcw/utils";
 
 // import { ObjectId } from "bson";
 
@@ -82,19 +83,7 @@ export default function Home() {
           const response = await fetch(`/api/user/${session.user.id}/todo`);
           const json = await response.json();
           setTodoList(
-            json.map((todo) => {
-              return {
-                title: todo.title,
-                detail: todo.detail,
-                due_date: new Date(todo.due_date),
-                tags: todo.tags,
-                project: todo.project,
-                status: {
-                  done: todo.done,
-                  is_public: todo.is_public,
-                },
-              };
-            })
+            json.map(convertTodoFromResponseJSON)
           );
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -103,6 +92,18 @@ export default function Home() {
       fetchData();
     }
   }, [session?.user?.id]);
+
+  useEffect(() => {
+    console.log(focusedDate);
+  }, [focusedDate])
+
+  useEffect(() => {
+    console.log(selectedProject);
+  }, [selectedProject])
+
+  useEffect(() => {
+    console.log(todoList)
+  }, [todoList])
 
   return (
     <div className="w-full h-screen flex justify-between">
@@ -134,6 +135,7 @@ export default function Home() {
         <div className="flex h-full justify-center">
           <TodoContainer
             todoList={todoList}
+            setTodoList={setTodoList}
             selectedTags={selectedTags}
             selectedProject={selectedProject}
             className="w-full flex flex-col items-center h-full"
@@ -166,10 +168,12 @@ export default function Home() {
               projectList: projectList,
               selectedProject: selectedProject,
               tagList: tagList,
+              todoList: todoList,
+              setTodoList: setTodoList,
               selectedTags: selectedTags,
               focusedDate: focusedDate,
             }}
-            className="absolute right-1 bottom-1"
+            className="absolute right-1 bottom-1 shadow-xl"
             unmount={() => { setShowNewTodo(false); }}
           />
         </CSSTransition>

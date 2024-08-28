@@ -23,7 +23,7 @@ export default function DateContainer({ date, todoList, className }) {
           <TodoCard
             key={idx}
             title={data.title}
-            done={data.done}
+            done={data.status.done}
             detail={data.detail}
             tags={data.tags}
           />

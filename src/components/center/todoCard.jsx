@@ -7,7 +7,8 @@ export default function TodoCard({ title, done, detail, tags }) {
         <span className={`font-bold ${done && "line-through"}`}>{title}</span>
         <input
           type="checkbox"
-          defaultChecked={done}
+          checked={done}
+          readOnly
           className="h-4 aspect-square text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
         />
       </div>

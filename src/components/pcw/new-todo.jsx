@@ -24,6 +24,7 @@ import CardWrapper from "./new-todo-comp/cardwrapper"
 import ProjectSelector from "./new-todo-comp/project-selector"
 import TagSelector from "./new-todo-comp/tag-selector"
 import DatePicker from "./new-todo-comp/datepicker"
+import { convertTodoFromResponseJSON } from "./utils"
 
 const SubHeader = ({ children }) => (<h2 className="text-xl font-bold mb-3">{children}</h2>)
 const VSeperator = () => (<Separator orientation="vertical" className="absolute right-0"/>)
@@ -47,6 +48,7 @@ const NewTodo = React.forwardRef(({ gs = placeholder, className, unmount }, ref)
     selectedTags,
     selectedProject,
     todoList,
+    setTodoList,
     projectList,
     tagList
   } = gs;
@@ -58,7 +60,7 @@ const NewTodo = React.forwardRef(({ gs = placeholder, className, unmount }, ref)
       detail: '',
       due_date: focusedDate,
       tag: selectedTags,
-      project: selectedProject,
+      project: selectedProject?.title ?? "(없음)",
       status: {
         done: false,
         is_public: false
@@ -86,11 +88,13 @@ const NewTodo = React.forwardRef(({ gs = placeholder, className, unmount }, ref)
         },
         body: JSON.stringify(values)
       });
-      console.log(res);
+      const json = await res.json();
+      setTodoList([...todoList, convertTodoFromResponseJSON(json)]);
     } catch (error) {
       console.error(error);
     }
     setSubmitting(false);
+    unmount();
   }
 
   return (
