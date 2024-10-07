@@ -194,10 +194,15 @@ export default function ProjectContainer({
           <input
             type="date"
             name="due_date"
-            value={newProject.due_date}
+            value={
+              newProject.due_date
+                ? new Date(newProject.due_date).toISOString().substring(0, 10)
+                : ""
+            }
             onChange={handleInputChange}
             className="w-full p-2 mb-2 text-black rounded"
           />
+
           <label className="flex items-center">
             <input
               type="checkbox"
