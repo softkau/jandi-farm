@@ -2,7 +2,11 @@ import TagCard from "../leftNav/tagCard";
 
 export default function TodoCard({ data, handleDone }) {
   return (
-    <div className="w-full rounded-md shadow-md px-6 py-4 flex flex-col gap-4">
+    <div
+      className={`w-full rounded-md shadow-md px-6 py-4 flex flex-col gap-4 ${
+        data.status.done ? "bg-gray-100 opacity-75" : "bg-white"
+      }`}
+    >
       <div className="flex justify-between">
         <span className={`font-bold ${data.status.done && "line-through"}`}>
           {data.title}
