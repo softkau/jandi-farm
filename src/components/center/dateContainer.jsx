@@ -53,12 +53,32 @@ export default function DateContainer({
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/api/todo/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete todo");
+      }
+
+      setTodoList((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className={cn("w-full", className)}>
       <DateDivider date={format(date, `yyyy.MM.dd`)} />
       <div className="w-full px-12 pb-12 flex flex-col items-center gap-4">
         {todoList.map((data) => (
-          <TodoCard key={data.id} data={data} handleDone={handleDone} />
+          <TodoCard
+            key={data.id}
+            data={data}
+            handleDone={handleDone}
+            handleDelete={handleDelete}
+          />
         ))}
       </div>
     </div>
