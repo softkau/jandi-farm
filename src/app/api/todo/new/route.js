@@ -40,16 +40,13 @@ export const POST = async (req) => {
 
     let projectId = null;
     if (project) {
-      const proj = await Project.findOne({
-        owner: session.user.id,
-        title: project
-      });
+      const proj = await Project.findOne({ title: project });
 
-      if (proj != null) { // project가 존재하면 id 설정
-        projectId = proj._id;
-      } else { // project가 없으면 컷
+      if (!proj || (proj.owner !== session.user.id && !proj.shared_users.includes(session.user.id))) {
         return new Response("Project not found.", { status: 404 });
       }
+
+      projectId = proj._id;
     }
     
     const newTodo = new Todo({

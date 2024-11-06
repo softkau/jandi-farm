@@ -34,11 +34,15 @@ export const GET = async (req, { params }) => {
       ]
     });
 
-    if (existingProject) {
-      return new Response(existingProject, { status: 200 });
-    } else {
+    if (!existingProject) {
       return new Response('Not found.', { status: 404 });
     }
+    if (existingProject.owner !== session.user.id) {
+      if (!existingProject.shared_users.includes(session.user.id))
+        return new Response('Not found.', { status: 404 });
+    }
+
+    return new Response(existingProject, { status: 200 });
   } catch (error) {
     console.log('[에러] /api/project/[id] GET 실패');
     console.log(error);
