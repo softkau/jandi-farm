@@ -24,6 +24,8 @@ export default function ProjectCard({
     (t) => !t.status.done && t.project === data._id
   ).length;
 
+  const totalTodo = todoList.filter((t) => t.project === data._id).length;
+
   // 우클릭시 이벤트 발생
   const handleContextMenu = (e) => {
     e.preventDefault();
@@ -69,16 +71,18 @@ export default function ProjectCard({
         onClick={() => handleSelected(data._id, isFocused)}
         onContextMenu={handleContextMenu}
       >
-        {isFocused ? (<FolderOpen />) : (<Folder />)}
+        {isFocused ? <FolderOpen /> : <Folder />}
         <div
-          className={`ml-2 mr-auto flex-grow ${isFocused ? "font-bold" : "font-medium"}`}
+          className={`ml-2 mr-auto flex-grow ${
+            isFocused ? "font-bold" : "font-medium"
+          }`}
         >
           {data.title}
         </div>
         {isFocused ? (
-            <ChevronUp className="animate-chevron-spin" />
+          <ChevronUp className="animate-chevron-spin" />
         ) : (
-          <span>{leftTodo}</span>
+          <span>{`${totalTodo - leftTodo} / ${totalTodo}`}</span>
         )}
       </div>
       {showMenu && (
@@ -102,9 +106,27 @@ export default function ProjectCard({
         </ul>
       )}
       {isFocused && (
-        <div className="h-36 bg-white rounded-md m-1">
-          <div>{data.detail}</div>
-          <div>{format(data.due_date, "PPP", { locale: ko })}</div>
+        <div className="h-36 bg-white rounded-md m-1 p-2">
+          <div className="flex justify-between items-center">
+            <div>{format(data.due_date, "PPP", { locale: ko })}</div>
+            <div>{`D-${Math.ceil(
+              (new Date(data.due_date) - new Date()) / (1000 * 60 * 60 * 24)
+            )}`}</div>
+          </div>
+          <div className="mt-2">
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                className="bg-blue-600 h-2.5 rounded-full"
+                style={{
+                  width: `${((totalTodo - leftTodo) / totalTodo) * 100}%`,
+                }}
+              ></div>
+            </div>
+            <div className="text-sm text-gray-500 mt-1">{`${
+              totalTodo - leftTodo
+            } / ${totalTodo} 완료`}</div>
+          </div>
+          <div className="mt-2">{data.detail}</div>
         </div>
       )}
     </div>
