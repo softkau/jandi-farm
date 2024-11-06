@@ -109,9 +109,11 @@ export default function Home() {
     <div className="w-full h-screen flex justify-between">
       <div className="w-80 h-full flex-shrink-0 flex flex-col bg-zinc-50">
         <div className="h-20 bg-green-200 flex justify-center items-center">
-          <Sprout size={35}/>
-          <span className="font-extrabold text-3xl">&nbsp;JANDI FARM&nbsp;</span>
-          <Sprout size={35}/>
+          <Sprout size={35} />
+          <span className="font-extrabold text-3xl">
+            &nbsp;JANDI FARM&nbsp;
+          </span>
+          <Sprout size={35} />
         </div>
         <div className="h-full flex flex-col justify-between">
           <ProjectContainer
@@ -174,7 +176,7 @@ export default function Home() {
               focusedDate: focusedDate,
             }}
             className="absolute right-1 bottom-1 shadow-xl"
-            unmount={() => { setShowNewTodo(false); }}
+            unmount={() => setShowNewTodo(false) }
           />
         </CSSTransition>
       </div>

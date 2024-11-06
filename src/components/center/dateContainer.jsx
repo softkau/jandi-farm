@@ -12,21 +12,48 @@ function DateDivider({ date }) {
   );
 }
 
-export default function DateContainer({ date, todoList, className }) {
-  const handleDone = (id) => {};
+export default function DateContainer({
+  date,
+  todoList,
+  setTodoList,
+  className,
+}) {
+  const handleDone = async (id) => {
+    try {
+      const updateTodo = todoList.find((todo) => todo.id === id);
+      console.log(updateTodo);
+      if (!updateTodo) throw new Error("Todo id not found");
+
+      const response = await fetch(`/api/todo/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: { done: !updateTodo.status.done } }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update todo status");
+      }
+      console.log(response);
+      setTodoList((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo.id === id
+            ? { ...todo, status: { ...todo.status, done: !todo.status.done } }
+            : todo
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className={cn("w-full", className)}>
       <DateDivider date={format(date, `yyyy.MM.dd`)} />
       <div className="w-full px-12 pb-12 flex flex-col items-center gap-4">
-        {todoList.map((data, idx) => (
-          <TodoCard
-            key={idx}
-            title={data.title}
-            done={data.status.done}
-            detail={data.detail}
-            tags={data.tags}
-          />
+        {todoList.map((data) => (
+          <TodoCard key={data.id} data={data} handleDone={handleDone} />
         ))}
       </div>
     </div>
