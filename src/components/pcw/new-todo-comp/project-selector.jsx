@@ -38,7 +38,7 @@ const ProjectSelector = React.forwardRef(({ projectList=[], onChange, value=null
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {projects.find(project => project.value === value)?.label ?? "프로젝트를 선택..."}
+          {projects.find(project => project.value === value)?.label ?? "없음"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

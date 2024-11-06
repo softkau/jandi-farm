@@ -13,6 +13,7 @@ import { LogIn, Plus, Sprout } from "lucide-react";
 import { CSSTransition } from "react-transition-group";
 import { convertTodoFromResponseJSON } from "@/components/pcw/utils";
 import TodoEditor from "@/components/pcw/TodoEditor";
+import { TodoEditorProvider } from "@/components/pcw/new-todo-comp/editor-context";
 
 // import { ObjectId } from "bson";
 
@@ -107,6 +108,7 @@ export default function Home() {
   }, [todoList])
 
   return (
+    <TodoEditorProvider>
     <div className="w-full h-screen flex justify-between">
       <div className="w-80 h-full flex-shrink-0 flex flex-col bg-zinc-50">
         <div className="h-20 bg-green-200 flex justify-center items-center">
@@ -201,5 +203,6 @@ export default function Home() {
         )}
       </div>
     </div>
+    </TodoEditorProvider>
   );
 }

@@ -117,7 +117,7 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
   }
 
   return (
-    <CardWrapper title="TODO Editor" className={ className } ref={ref}>
+    <CardWrapper title={todoId ? "일정 수정" : "새 일정 추가"} className={ className } ref={ref}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -156,13 +156,18 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
               </FormItem>
             )}
           />
+          <Separator className="my-0" />
+
           <FormField
             control={form.control}
             name="due_date"
             render={({ field }) => (
-              <FormItem className="mb-1">
+              <FormItem className="flex items-center">
+                <strong className="w-20 mt-2 mr-2 indent-1">마감일</strong>
                 <FormControl>
-                  <DatePicker placeholder="마감일을 지정해주십시오..." { ...field } required />
+                  <div className="w-auto">
+                    <DatePicker placeholder="마감일을 지정해주십시오..." { ...field } required />
+                  </div>
                 </FormControl>
               </FormItem>
             )}
@@ -171,7 +176,8 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
             control={form.control}
             name="project"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex items-center">
+                <strong className="w-20 mt-2 mr-2 indent-1">프로젝트</strong>
                 <FormControl>
                   <ProjectSelector projectList={ projectList.map(x => x.title) } { ...field }/>
                 </FormControl>
@@ -182,23 +188,43 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
             control={form.control}
             name="tag"
             render={({ field }) => (
-              <FormItem className="mt-5">
-                <FormControl>
-                  <TagSelector tagList={tagList} { ...field } />
-                </FormControl>
+              <FormItem className="my-2 flex">
+                <strong className="w-20 mt-2 mr-2 indent-1">태그</strong>
+                <div className="max-w-96 flex-grow">
+                  <FormControl>
+                    <TagSelector className="w-full" tagList={tagList} { ...field } />
+                  </FormControl>
+                </div>
               </FormItem>
 
             )}
           />
-          <div className="flex flex-row-reverse gap-3">
+          <Separator className='mb-2' />
+          <div className="flex flex-row-reverse gap-2">
             {
               !submitting ? (
-                <Button className="rounded-3xl" type="submit" variant="pcw_create">{todoId ? "저장" : "추가"}</Button>
+                <Button
+                  className="rounded-2xl font-bold w-[80px] bg-green-300 text-black hover:bg-green-200"
+                  type="submit"
+                >
+                  {todoId ? "저장" : "추가"}
+                </Button>
               ) : (
-                <Button disabled><Loader2 className="mr-2 h-4 w-4 animate-spin"/>{todoId ? "저장 중..." : "추가 중..."}</Button>
+                <Button
+                  disabled
+                  className="rounded-3xl font-bold w-[80px] bg-gray-100 text-gray-600"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                  {todoId ? "저장 중..." : "추가 중..."}
+                </Button>
               )
             }
-            <Button className="rounded-3xl" variant="destructive" onClick={(e)=>{e.preventDefault(); unmount();}}>취소</Button>
+            <Button
+              className="rounded-2xl font-bold w-[80px] bg-gray-200 text-black hover:bg-gray-100"
+              onClick={(e)=>{e.preventDefault(); unmount();}}
+            >
+              취소
+            </Button>
           </div>
         </form>
       </Form>

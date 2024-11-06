@@ -1,8 +1,10 @@
 import TagCard from "../leftNav/tagCard";
 import { FaTrashAlt, FaExclamationTriangle } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
+import { Pencil } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export default function TodoCard({ data, handleDone, handleDelete }) {
+export default function TodoCard({ data, handleDone, handleDelete, openTodoEditor }) {
   const [showConfirm, setShowConfirm] = useState(false);
   const deleteButtonRef = useRef(null);
 
@@ -81,6 +83,13 @@ export default function TodoCard({ data, handleDone, handleDelete }) {
       <div>{data.detail}</div>
       <div className="flex flex-row gap-2 justify-between">
         <button
+          onClick={() => openTodoEditor(data.id)}
+          className={cn('flex items-center gap-1 text-green-200')}
+        >
+          <Pencil />수정
+        </button>
+        
+        {/*<button
           ref={deleteButtonRef}
           onClick={() => handleDeleteClick(data.id)}
           className={`flex items-center gap-1 ${
@@ -89,7 +98,7 @@ export default function TodoCard({ data, handleDone, handleDelete }) {
         >
           {showConfirm ? <FaExclamationTriangle /> : <FaTrashAlt />}
           <span>{showConfirm ? "Confirm" : "Delete"}</span>
-        </button>
+        </button>*/}
         <div className="flex flex-row gap-2">
           {data.tags.map((name, idx) => (
             <TagCard key={idx} name={name} textSize={"text-sm"} />
