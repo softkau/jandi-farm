@@ -27,12 +27,14 @@ export default function DateContainer({
       console.log(updateTodo);
       if (!updateTodo) throw new Error("Todo id not found");
 
+      const newStatus = !updateTodo.status.done;
+
       const response = await fetch(`/api/todo/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status: { done: !updateTodo.status.done } }),
+        body: JSON.stringify({ status: { done: newStatus } }),
       });
 
       if (!response.ok) {
@@ -42,7 +44,7 @@ export default function DateContainer({
       setTodoList((prevTodos) =>
         prevTodos.map((todo) =>
           todo.id === id
-            ? { ...todo, status: { ...todo.status, done: !todo.status.done } }
+            ? { ...todo, status: { ...todo.status, done: newStatus } }
             : todo
         )
       );

@@ -18,7 +18,7 @@ import Project from "@/models/project";
 /// * 서버 에러시 500 반환
 export const GET = async (req, { params }) => {
   const { id } = params;
-  
+
   const session = await getServerSession(authOptions);
   if (!session) {
     return new Response("You must be logged in.", { status: 401 });
@@ -29,23 +29,20 @@ export const GET = async (req, { params }) => {
 
     const existingTodo = await Todo.findOne({
       _id: id,
-      $or: [
-        { owner: session.user.id },
-        { is_public: true }
-      ]
+      $or: [{ owner: session.user.id }, { is_public: true }],
     });
 
     if (existingTodo) {
       return new Response(existingTodo, { status: 200 });
     } else {
-      return new Response('Not found.', { status: 404 });
+      return new Response("Not found.", { status: 404 });
     }
   } catch (error) {
-    console.log('[에러] /api/todo/[id] GET 실패');
+    console.log("[에러] /api/todo/[id] GET 실패");
     console.log(error);
-    return new Response('Failed to fetch requested Todo List', { status: 500 });
+    return new Response("Failed to fetch requested Todo List", { status: 500 });
   }
-}
+};
 
 /// /api/todo/[id] PATCH 요청
 /// [요약] id에 해당하는 Todo Document를 일부 업데이트합니다.
@@ -68,7 +65,7 @@ export const PATCH = async (req, { params }) => {
     return new Response("You must be logged in.", { status: 401 });
   }
 
-  let patch = {}
+  let patch = {};
   if (title) {
     patch.title = title;
   }
@@ -83,13 +80,13 @@ export const PATCH = async (req, { params }) => {
   }
   if (tag) {
     let tagList = Array.isArray(tag) ? tag : [tag];
-    if (tagList.every(x => /^[ ]*#[^# ]+[ ]*$/.test(x))) {
-      patch.tags = tagList.map(x => x.trim().substring(1));
+    if (tagList.every((x) => /^[ ]*#[^# ]+[ ]*$/.test(x))) {
+      patch.tags = tagList.map((x) => x.trim().substring(1));
     } else {
       return new Response("Illegal tag format", { status: 422 });
     }
   }
-  if (status?.done) {
+  if (status?.done !== undefined) {
     patch.done = status.done;
   }
   if (status?.is_public) {
@@ -102,25 +99,29 @@ export const PATCH = async (req, { params }) => {
     if (project) {
       const proj = await Project.findOne({
         owner: session.user.id,
-        title: project
+        title: project,
       });
       if (!proj) {
         return new Response("Project not found.", { status: 404 });
       }
       patch.project = proj._id;
     }
-    const updatedDoc = await Todo.findOneAndUpdate({ _id: id, owner: session.user.id }, patch, { new: true });
+    const updatedDoc = await Todo.findOneAndUpdate(
+      { _id: id, owner: session.user.id },
+      patch,
+      { new: true }
+    );
     if (updatedDoc) {
-      return new Response(updatedDoc, { status: 200 })
+      return new Response(updatedDoc, { status: 200 });
     } else {
-      return new Response('Not found.', { status: 404 });
+      return new Response("Not found.", { status: 404 });
     }
   } catch (error) {
-    console.log('[에러] /api/todo/[id] PATCH 실패');
+    console.log("[에러] /api/todo/[id] PATCH 실패");
     console.log(error);
-    return new Response('Failed to patch requested Todo List', { status: 500 });
+    return new Response("Failed to patch requested Todo List", { status: 500 });
   }
-}
+};
 
 /// /api/todo/[id] DELETE 요청
 /// [요약] id에 해당하는 Todo Document를 삭제합니다.
@@ -140,15 +141,18 @@ export const DELETE = async (req, { params }) => {
 
   try {
     await connectToDB();
-    const originalDoc = await Todo.findOneAndDelete({ _id : id, owner: session.user.id });
+    const originalDoc = await Todo.findOneAndDelete({
+      _id: id,
+      owner: session.user.id,
+    });
     if (originalDoc != null) {
-      return new Response('Deleted requested Todo List', { status: 200 });
+      return new Response("Deleted requested Todo List", { status: 200 });
     } else {
-      return new Response('Not found.', { status: 404 });
+      return new Response("Not found.", { status: 404 });
     }
   } catch (error) {
-    console.log('[에러] /api/todo/[id] DELETE 실패');
+    console.log("[에러] /api/todo/[id] DELETE 실패");
     console.log(error);
-    return new Response('Failed to patch requested Todo List', { status: 500 });
+    return new Response("Failed to patch requested Todo List", { status: 500 });
   }
-}
+};
