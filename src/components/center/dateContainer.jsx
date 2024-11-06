@@ -3,10 +3,13 @@ import TodoCard from "./todoCard";
 import { format } from "date-fns";
 
 function DateDivider({ date }) {
+  const isToday = format(new Date(), "yyyy.MM.dd") === date;
   return (
     <div className="flex items-center my-12">
       <div className="flex-grow border-t border-black"></div>
-      <span className="px-4 text-gray-600 text-2xl font-bold">{date}</span>
+      <span className="px-4 text-gray-600 text-2xl font-bold">
+        {date} {isToday && <span className="text-black-500">(Today)</span>}
+      </span>
       <div className="flex-grow border-t border-black"></div>
     </div>
   );
