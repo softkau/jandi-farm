@@ -42,7 +42,7 @@ const formSchema = z.object({
 })
 
 
-const NewTodo = React.forwardRef(({ gs = placeholder, className, unmount }, ref) => {
+const NewTodo = React.forwardRef(({ gs, className, unmount }, ref) => {
   const {
     focusedDate,
     selectedTags,

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { LogIn, Plus, Sprout } from "lucide-react";
 import { CSSTransition } from "react-transition-group";
 import { convertTodoFromResponseJSON } from "@/components/pcw/utils";
+import TodoEditor from "@/components/pcw/TodoEditor";
 
 // import { ObjectId } from "bson";
 
@@ -164,7 +165,7 @@ export default function Home() {
           onEnter={() => setShowNewTodoBtn(false)}
           onExited={() => setShowNewTodoBtn(true)}
         >
-          <NewTodo
+          <TodoEditor
             ref={newTodoRef}
             gs={{
               projectList: projectList,
