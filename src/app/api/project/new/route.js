@@ -32,12 +32,11 @@ export const POST = async (req) => {
   try {
     await connectToDB();
 
-    const shared = await shared_users.map(email => {
-      return User.findOne({ email: email })
-    });
-    const shared_fix = shared.filter(x => x != null);
+    const shared = await User.find({
+      email: { $in: shared_users ?? [] },
+    }).select("_id");
 
-    console.log(`[alert] shared: ${shared_fix}`)
+    console.log(`[alert] shared: ${shared}`);
 
     const newProject = new Project({
       owner: session.user.id,
@@ -45,23 +44,25 @@ export const POST = async (req) => {
       due_date: new Date(due_date),
       detail: detail,
       is_public: is_public,
-      shared_users: shared_fix,
+      shared_users: shared,
     });
 
     const docSaved = await newProject.save();
     if (docSaved !== newProject) {
-      console.log('[에러] DB에 Project 저장 실패');
-      return new Response('Failed to create new Project', { status: 500 });
+      console.log("[에러] DB에 Project 저장 실패");
+      return new Response("Failed to create new Project", { status: 500 });
     }
 
     return NextResponse.json(newProject, { status: 201 });
   } catch (error) {
-    console.log('[에러] /api/project/new POST 실패');
-    console.log('에러 이름:', error.name);
-    console.log('에러 메세지:', error.message);
-    if (error.message.startsWith('E11000')) {
-      return NextResponse.json('Project with the same name already exists!', { status: 400 });
+    console.log("[에러] /api/project/new POST 실패");
+    console.log("에러 이름:", error.name);
+    console.log("에러 메세지:", error.message);
+    if (error.message.startsWith("E11000")) {
+      return NextResponse.json("Project with the same name already exists!", {
+        status: 400,
+      });
     }
-    return new Response('Failed to create new Project', { status: 500 });
+    return new Response("Failed to create new Project", { status: 500 });
   }
-}
+};

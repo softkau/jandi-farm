@@ -2,7 +2,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { connectToDB } from "@/utils/database";
 import Todo from "@/models/todo";
-import User from "@/models/user"
+import User from "@/models/user";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
@@ -29,7 +29,7 @@ export const GET = async (req, { params }) => {
 
   try {
     await connectToDB();
-    
+
     const userExists = await User.exists({ _id: userId });
     if (!userExists) {
       return NextResponse.json("User not found.", { status: 404 });
@@ -41,11 +41,13 @@ export const GET = async (req, { params }) => {
       filter.is_public = true;
     }
     const existingTodos = await Todo.find(filter).lean();
-    
+
     return NextResponse.json(existingTodos, { status: 200 });
   } catch (error) {
-    console.log('[에러] /api/user/[id]/todo GET 실패');
+    console.log("[에러] /api/user/[id]/todo GET 실패");
     console.log(error);
-    return NextResponse.json('Failed to fetch requested Todo Lists', { status: 500 });
+    return NextResponse.json("Failed to fetch requested Todo Lists", {
+      status: 500,
+    });
   }
-}
+};
