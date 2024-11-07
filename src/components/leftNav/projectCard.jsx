@@ -102,9 +102,6 @@ export default function ProjectCard({
     }
   }, []);
 
-  console.log(owner);
-  console.log(slave);
-
   return (
     <div>
       <div

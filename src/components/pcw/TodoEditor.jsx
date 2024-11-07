@@ -58,13 +58,15 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
     unmount();
   }
 
+  const selectedProjPopulated = projectList.find(x => x._id === selectedProject);
+
   const form = useForm({
     defaultValues: {
       title:    selectedTodo?.title ?? '',
       detail:   selectedTodo?.detail ?? '',
       due_date: selectedTodo?.due_date ?? focusedDate,
       tag:      selectedTodo?.tags ?? selectedTags,
-      project:  selectedTodo?.project ?? (selectedProject?.title ?? "(없음)"),
+      project:  selectedTodo ? (projectList.find(x => x._id === selectedTodo.project)?.title ?? '') : (selectedProjPopulated?.title ?? ''),
       status:   selectedTodo?.status ?? {
         done: false,
         is_public: false
@@ -80,8 +82,6 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
       values.project = null;
     }
     values.due_date = format(values.due_date, 'P');
-
-    console.log(values)
 
     setSubmitting(true);
     try {
@@ -104,7 +104,8 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
           body: JSON.stringify(values)
         });
         const json = await res.json();
-        setTodoList(todoList.map(todo => (todo._id === todoId
+        console.log(todoList)
+        setTodoList(todoList.map(todo => (todo.id === todoId
           ? convertTodoFromResponseJSON(json)
           : todo
         )))
@@ -113,6 +114,26 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
       console.error(error);
     }
     setSubmitting(false);
+    unmount();
+  };
+
+  const onDel = async () => {
+    try {
+      if (!todoId) {
+        alert("?");
+      } else {
+        const res = await fetch(`/api/todo/${todoId}`, {
+          method: "DELETE"
+        });
+        if (res.ok) {
+          setTodoList(todoList.filter(todo => todo.id !== todoId))
+        } else {
+          console.error("deletion failed...")
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
     unmount();
   }
 
@@ -225,6 +246,11 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
             >
               취소
             </Button>
+            {todoId && <Button
+              className="rounded-2xl font-bold w-[80px] bg-destructive absolute left-6 text-white hover:bg-red-300"
+              onClick={(e)=>{ e.preventDefault(); onDel(); }}
+            >삭제</Button>}
+            
           </div>
         </form>
       </Form>

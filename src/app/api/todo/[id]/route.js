@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { connectToDB } from "@/utils/database";
 import Todo from "@/models/todo";
 import Project from "@/models/project";
+import { NextResponse } from "next/server";
 
 /// TODO: 관리자 권한도 구현...?
 
@@ -84,10 +85,11 @@ export const PATCH = async (req, { params }) => {
   }
   if (tag) {
     let tagList = Array.isArray(tag) ? tag : [tag];
-    if (tagList.every((x) => /^[ ]*#[^# ]+[ ]*$/.test(x))) {
-      patch.tags = tagList.map((x) => x.trim().substring(1));
+    if (tagList.every((x) => /^[^# ]+$/.test(x))) {
+      patch.tags = tagList
     } else {
-      return new Response("Illegal tag format", { status: 422 });
+      console.error(tagList)
+      return new Response(`Illegal tag format ${tagList}`, { status: 422 });
     }
   }
   if (status?.done !== undefined) {
@@ -108,7 +110,7 @@ export const PATCH = async (req, { params }) => {
       }
 
       // code updated for clarity
-      if (proj.owner !== session.user.id) {
+      if (proj.owner != session.user.id) {
         // if it's not even visible to the user, then return 404
         if (!proj.shared_users.includes(session.user.id)) {
           return new Response("Project not found.", { status: 404 });
@@ -123,7 +125,7 @@ export const PATCH = async (req, { params }) => {
       { new: true }
     );
     if (updatedDoc) {
-      return new Response(updatedDoc, { status: 200 });
+      return NextResponse.json(updatedDoc, { status: 200 });
     } else {
       return new Response("Not found.", { status: 404 });
     }

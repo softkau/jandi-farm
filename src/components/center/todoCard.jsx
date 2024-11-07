@@ -84,7 +84,7 @@ export default function TodoCard({ data, handleDone, handleDelete, openTodoEdito
       <div className="flex flex-row gap-2 justify-between">
         <button
           onClick={() => openTodoEditor(data.id)}
-          className={cn('flex items-center gap-1 text-green-200')}
+          className={cn('flex items-center gap-1 text-green-500 font-bold hover:text-green-300')}
         >
           <Pencil />수정
         </button>
