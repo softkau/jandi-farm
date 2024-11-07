@@ -5,6 +5,7 @@ import Todo from "@/models/todo";
 import User from "@/models/user";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+import Project from "@/models/project";
 
 /// /api/user/[id]/todo GET 요청
 /// [요약] id에 해당하는 User의 Todo Document들을 불러옵니다.
@@ -35,12 +36,24 @@ export const GET = async (req, { params }) => {
       return NextResponse.json("User not found.", { status: 404 });
     }
 
-    let filter = {};
-    filter.owner = userId;
     if (userId !== session.user.id) {
-      filter.is_public = true;
+      return NextResponse.json("User mistmatch.", { status: 403 });
     }
-    const existingTodos = await Todo.find(filter).lean();
+
+    const sharedProjects = await Project.find({
+      $or: [
+        { owner: userId },
+        { shared_users: userId }
+      ]
+    });
+
+    const existingTodos = await Todo.find({
+      $or: [
+        { is_public: true },
+        { owner: userId },
+        { project: { $in: sharedProjects } }
+      ]
+    }).lean();
 
     return NextResponse.json(existingTodos, { status: 200 });
   } catch (error) {

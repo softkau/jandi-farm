@@ -41,8 +41,7 @@ export const POST = async (req) => {
     let projectId = null;
     if (project) {
       const proj = await Project.findOne({ title: project });
-
-      if (!proj || (proj.owner !== session.user.id && !proj.shared_users.includes(session.user.id))) {
+      if (!proj || (proj.owner != session.user.id && !proj.shared_users.includes(session.user.id))) {
         return new Response("Project not found.", { status: 404 });
       }
 

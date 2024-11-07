@@ -47,7 +47,7 @@ export const GET = async (req, { params }) => {
         { shared_users: userId },
         { is_public: true }
       ]
-    }: {
+    } : {
       is_public: true
     }).lean();
 
