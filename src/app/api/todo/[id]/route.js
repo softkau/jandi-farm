@@ -13,7 +13,7 @@ import Project from "@/models/project";
 /// * session이 없으면 401 반환
 /// * 다음의 조건을 모두 만족할 경우, id에 해당하는 Todo Document를 body에 포함하여 200 반환
 ///   1. 일치하는 id를 가진 Todo Document가 DB에 존재
-///   2. 공개된 Todo이거나, 로그인된 사용자가 작성한 Todo
+///   2. 공개된 Todo이거나, 로그인된 사용자가 작성한 Todo || 공개되거나 공유된 프로젝트의 Todo
 /// * 불만족시 404 반환
 /// * 서버 에러시 500 반환
 export const GET = async (req, { params }) => {
@@ -27,16 +27,20 @@ export const GET = async (req, { params }) => {
   try {
     await connectToDB();
 
-    const existingTodo = await Todo.findOne({
-      _id: id,
-      $or: [{ owner: session.user.id }, { is_public: true }],
-    });
+    const existingTodo = await Todo.findById(id);
 
-    if (existingTodo) {
-      return new Response(existingTodo, { status: 200 });
-    } else {
+    if (!existingTodo) {
       return new Response("Not found.", { status: 404 });
     }
+    if (existingTodo.owner !== session.user.id && !existingTodo.is_public) {
+      const proj = await Project.findById(existingTodo.project);
+      if (!proj) return new Response("Not found.", { status: 404 });
+      
+      if (!proj.is_public && !proj.shared_users.includes(session.user.id))
+        return new Response("Not found.", { status: 404 });
+    }
+
+    return new Response(existingTodo, { status: 200 });    
   } catch (error) {
     console.log("[에러] /api/todo/[id] GET 실패");
     console.log(error);
@@ -96,16 +100,23 @@ export const PATCH = async (req, { params }) => {
   try {
     await connectToDB();
 
+    // project 변경 시도
     if (project) {
-      const proj = await Project.findOne({
-        owner: session.user.id,
-        title: project,
-      });
+      const proj = await Project.findOne({ title: project });
       if (!proj) {
         return new Response("Project not found.", { status: 404 });
       }
+
+      // code updated for clarity
+      if (proj.owner !== session.user.id) {
+        // if it's not even visible to the user, then return 404
+        if (!proj.shared_users.includes(session.user.id)) {
+          return new Response("Project not found.", { status: 404 });
+        }
+      }
       patch.project = proj._id;
     }
+
     const updatedDoc = await Todo.findOneAndUpdate(
       { _id: id, owner: session.user.id },
       patch,

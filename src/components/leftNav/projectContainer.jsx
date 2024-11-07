@@ -123,6 +123,7 @@ export default function ProjectContainer({
           status: {
             is_public: false,
           },
+          shared_users: [],
         });
         setShowForm(false);
       } catch (error) {
@@ -134,6 +135,7 @@ export default function ProjectContainer({
           status: {
             is_public: false,
           },
+          shared_users: [],
         });
         setShowForm(false);
       }
@@ -149,11 +151,40 @@ export default function ProjectContainer({
       status: {
         is_public: false,
       },
+      shared_users: [],
     });
     setShowForm(false);
   };
 
+  const handleRemoveSharedUser = (emailToRemove) => {
+    setNewProject((prev) => ({
+      ...prev,
+      shared_users: prev.shared_users.filter(
+        (email) => email !== emailToRemove
+      ),
+    }));
+  };
+
+  const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  const handleAddSharedUser = () => {
+    if (sharedEmail && validateEmail(sharedEmail)) {
+      setNewProject((prev) => ({
+        ...prev,
+        shared_users: [...prev.shared_users, sharedEmail],
+      }));
+      setSharedEmail("");
+    } else {
+      alert("유효한 이메일을 입력해주세요.");
+    }
+  };
+
   const [showForm, setShowForm] = useState(false);
+  const [sharedEmail, setSharedEmail] = useState("");
+
   const [newProject, setNewProject] = useState({
     title: "",
     detail: "",
@@ -161,19 +192,41 @@ export default function ProjectContainer({
     status: {
       is_public: false,
     },
+    shared_users: [],
   });
+
   return (
     <div className="w-full flex flex-col p-1 gap-2">
-      {projects.map((data, idx) => (
-        <ProjectCard
-          key={idx}
-          data={data}
-          todoList={todoList}
-          isFocused={data._id === selected ? true : false}
-          handleSelected={handleSelected}
-          handleDeleteById={handleDelete}
-        />
-      ))}
+      <div className="my-projects border-b-2 pb-4 mb-4">
+        <h2 className="text-xl font-bold m-2">My Projects</h2>
+        {projects
+          .filter((data) => data.shared_users?.length == 0)
+          .map((data, idx) => (
+            <ProjectCard
+              key={idx}
+              data={data}
+              todoList={todoList}
+              isFocused={data._id === selected ? true : false}
+              handleSelected={handleSelected}
+              handleDeleteById={handleDelete}
+            />
+          ))}
+      </div>
+      <div className="shared-projects">
+        <h2 className="text-xl font-bold mb-2 m-2">Shared Projects</h2>
+        {projects
+          .filter((data) => data.shared_users?.length > 0)
+          .map((data, idx) => (
+            <ProjectCard
+              key={idx}
+              data={data}
+              todoList={todoList}
+              isFocused={data._id === selected ? true : false}
+              handleSelected={handleSelected}
+              handleDeleteById={handleDelete}
+            />
+          ))}
+      </div>
       {showForm && (
         <div className="mt-4">
           <input
@@ -191,6 +244,45 @@ export default function ProjectContainer({
             className="w-full p-2 mb-2 text-black rounded"
             placeholder="프로젝트 설명"
           />
+
+          <div className="mb-4">
+            <label className="block mb-2">공동 작업자 이메일</label>
+            <div className="flex">
+              <input
+                type="email"
+                value={sharedEmail}
+                onChange={(e) => setSharedEmail(e.target.value)}
+                className="flex-grow p-2 text-black rounded"
+                placeholder="이메일 입력"
+              />
+              <button
+                type="button"
+                onClick={handleAddSharedUser}
+                className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                +
+              </button>
+            </div>
+            {newProject.shared_users?.length > 0 && (
+              <ul className="mt-2">
+                {newProject.shared_users.map((email, index) => (
+                  <li
+                    key={index}
+                    className="flex justify-between items-center bg-gray-200 p-2 rounded mb-1"
+                  >
+                    {email}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSharedUser(email)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      삭제
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <input
             type="date"
             name="due_date"
@@ -202,7 +294,6 @@ export default function ProjectContainer({
             onChange={handleInputChange}
             className="w-full p-2 mb-2 text-black rounded"
           />
-
           <label className="flex items-center">
             <input
               type="checkbox"
@@ -230,7 +321,7 @@ export default function ProjectContainer({
         </div>
       )}
       {!showForm && (
-        <div className="flex justify-center items-center p-2">
+        <div className="flex justify-center items-center p-2 mt-5">
           <button
             className="h-10 w-full rounded-3xl border-2 p-1 border-gray-600 flex gap-2 justify-center items-center"
             onClick={() => setShowForm(true)}

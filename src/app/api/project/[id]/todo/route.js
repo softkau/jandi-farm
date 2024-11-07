@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 
 /// 프로젝트에 포함된 TODO의 공개 상태와 상관 없이
 /// 프로젝트가 공개 상태이면 전부 조회 가능하도록 하였음
+/// 또한 공유된 프로젝트도 조회가 가능
 /// 이 사항은 추후 변경될 수도 있음
 export const GET = async (req, { params }) => {
   const { id: projectId } = params;
@@ -27,7 +28,9 @@ export const GET = async (req, { params }) => {
     const existingProject = await Project.findById(projectId);
     // return NextResponse.json(existingProject, { status: 200 });
     if (existingProject
-      && (existingProject.owner.toString() === session.user.id)
+      && (existingProject.owner.toString() === session.user.id 
+          || existingProject.shared_users.includes(session.user.id)
+          || existingProject.is_public)
     ) {
       const projectTodos = await Todo.find({ project: projectId });
       return NextResponse.json(projectTodos, { status: 200 });

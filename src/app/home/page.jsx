@@ -57,11 +57,13 @@ export default function Home() {
               return {
                 _id: project._id,
                 title: project.title,
+                owner: project.owner,
                 detail: project.detail,
                 due_date: new Date(project.due_date),
                 status: {
                   is_public: project.is_public,
                 },
+                shared_users: project.shared_users ? project.shared_users : [],
               };
             })
           );
@@ -96,9 +98,7 @@ export default function Home() {
         try {
           const response = await fetch(`/api/user/${session.user.id}/todo`);
           const json = await response.json();
-          setTodoList(
-            json.map(convertTodoFromResponseJSON)
-          );
+          setTodoList(json.map(convertTodoFromResponseJSON));
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -106,18 +106,6 @@ export default function Home() {
       fetchData();
     }
   }, [session?.user?.id]);
-
-  useEffect(() => {
-    console.log(focusedDate);
-  }, [focusedDate])
-
-  useEffect(() => {
-    console.log(selectedProject);
-  }, [selectedProject])
-
-  useEffect(() => {
-    console.log(todoList)
-  }, [todoList])
 
   return (
     <div className="w-full h-screen flex justify-between">
@@ -209,7 +197,7 @@ export default function Home() {
               focusedDate: focusedDate,
             }}
             className="absolute right-1 bottom-1 shadow-xl"
-            unmount={() => setShowNewTodo(false) }
+            unmount={() => setShowNewTodo(false)}
           />
         </CSSTransition>
       </div>

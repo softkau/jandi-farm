@@ -25,7 +25,6 @@ export default function DateContainer({
   const handleDone = async (id) => {
     try {
       const updateTodo = todoList.find((todo) => todo.id === id);
-      console.log(updateTodo);
       if (!updateTodo) throw new Error("Todo id not found");
 
       const newStatus = !updateTodo.status.done;
@@ -41,7 +40,6 @@ export default function DateContainer({
       if (!response.ok) {
         throw new Error("Failed to update todo status");
       }
-      console.log(response);
       setTodoList((prevTodos) =>
         prevTodos.map((todo) =>
           todo.id === id
