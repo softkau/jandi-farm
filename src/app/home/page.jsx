@@ -43,6 +43,7 @@ export default function Home() {
               return {
                 _id: project._id,
                 title: project.title,
+                owner: project.owner,
                 detail: project.detail,
                 due_date: new Date(project.due_date),
                 status: {
@@ -59,8 +60,6 @@ export default function Home() {
       fetchData();
     }
   }, [session?.user?.id]);
-
-  console.log(projectList);
 
   // 태그 fetch
   useEffect(() => {
@@ -93,18 +92,6 @@ export default function Home() {
       fetchData();
     }
   }, [session?.user?.id]);
-
-  useEffect(() => {
-    console.log(focusedDate);
-  }, [focusedDate]);
-
-  useEffect(() => {
-    console.log(selectedProject);
-  }, [selectedProject]);
-
-  useEffect(() => {
-    console.log(todoList);
-  }, [todoList]);
 
   return (
     <div className="w-full h-screen flex justify-between">

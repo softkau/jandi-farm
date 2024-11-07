@@ -195,7 +195,6 @@ export default function ProjectContainer({
     shared_users: [],
   });
 
-  console.log(newProject);
   return (
     <div className="w-full flex flex-col p-1 gap-2">
       <div className="my-projects border-b-2 pb-4 mb-4">
