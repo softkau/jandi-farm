@@ -52,7 +52,7 @@ const TodoEditor = React.forwardRef(({ gs = placeholder, className, unmount, tod
     tagList
   } = gs;
 
-  const selectedTodo = todoList.find(todo => todo === todoId);
+  const selectedTodo = todoList.find(todo => todo.id === todoId);
   if (!selectedTodo && todoId != null) {
     alert('Invalid todo ID detected!')
     unmount();

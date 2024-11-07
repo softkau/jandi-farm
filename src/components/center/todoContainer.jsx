@@ -27,6 +27,7 @@ export default function TodoContainer({
   setTodoList,
   selectedTags,
   selectedProject,
+  openTodoEditor,
   className,
 }) {
   const [groupedTodo, setGroupedTodo] = useState([]);
@@ -54,6 +55,7 @@ export default function TodoContainer({
             date={date}
             todoList={groupedTodo[date]}
             setTodoList={setTodoList}
+            openTodoEditor={openTodoEditor}
             className="w-144"
           />
         ))}

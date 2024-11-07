@@ -19,6 +19,7 @@ export default function DateContainer({
   date,
   todoList,
   setTodoList,
+  openTodoEditor,
   className,
 }) {
   const handleDone = async (id) => {
@@ -78,6 +79,7 @@ export default function DateContainer({
             data={data}
             handleDone={handleDone}
             handleDelete={handleDelete}
+            openTodoEditor={openTodoEditor}
           />
         ))}
       </div>

@@ -6,14 +6,12 @@ import TodoContainer from "@/components/center/todoContainer";
 import { useEffect, useRef, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import CalendarView from "@/components/pcw/calendar-view";
-import NewTodo from "@/components/pcw/new-todo";
 import UserInfo from "@/components/pcw/user-info";
 import { Button } from "@/components/ui/button";
 import { LogIn, Plus, Sprout } from "lucide-react";
 import { CSSTransition } from "react-transition-group";
 import { convertTodoFromResponseJSON } from "@/components/pcw/utils";
 import TodoEditor from "@/components/pcw/TodoEditor";
-import { TodoEditorProvider } from "@/components/pcw/new-todo-comp/editor-context";
 
 // import { ObjectId } from "bson";
 
@@ -32,6 +30,20 @@ export default function Home() {
   const [showNewTodo, setShowNewTodo] = useState(false);
   const [showNewTodoBtn, setShowNewTodoBtn] = useState(true);
   const newTodoRef = useRef(null);
+
+  const [editorOpened, setEditorOpened] = useState(false)
+  const [openedId, setOpenedId] = useState(null)
+  const editorRef = useRef(null);
+
+  const openTodoEditor = (id) => {
+    setOpenedId(id)
+    setEditorOpened(true)
+  }
+
+  const closeTodoEditor = () => {
+    setEditorOpened(false)
+    setOpenedId(null)
+  }
 
   // 프로젝트 fetch
   useEffect(() => {
@@ -108,7 +120,6 @@ export default function Home() {
   }, [todoList])
 
   return (
-    <TodoEditorProvider>
     <div className="w-full h-screen flex justify-between">
       <div className="w-80 h-full flex-shrink-0 flex flex-col bg-zinc-50">
         <div className="h-20 bg-green-200 flex justify-center items-center">
@@ -143,9 +154,28 @@ export default function Home() {
             setTodoList={setTodoList}
             selectedTags={selectedTags}
             selectedProject={selectedProject}
+            openTodoEditor={openTodoEditor}
             className="w-full flex flex-col items-center h-full"
           />
         </div>
+
+        {editorOpened && openedId && (
+          <TodoEditor
+            ref={editorRef}
+            gs={{
+              projectList: projectList,
+              selectedProject: selectedProject,
+              tagList: tagList,
+              todoList: todoList,
+              setTodoList: setTodoList,
+              selectedTags: selectedTags,
+              focusedDate: focusedDate,
+            }}
+            todoId={ openedId }
+            className="absolute left-1/4 top-1/4 shadow-xl"
+            unmount={ closeTodoEditor }
+          />
+        )}
 
         {showNewTodoBtn && (
           <Button
@@ -203,6 +233,5 @@ export default function Home() {
         )}
       </div>
     </div>
-    </TodoEditorProvider>
   );
 }

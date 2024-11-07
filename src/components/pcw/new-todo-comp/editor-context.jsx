@@ -4,7 +4,6 @@ import { useContext, createContext, useState } from 'react'
 const TodoEditorStateContext = createContext()
 export const TodoEditorProvider = ({ children }) => {
   const [opened, setOpened] = useState(false)
-
   return (
     <TodoEditorStateContext.Provider
       value={{
