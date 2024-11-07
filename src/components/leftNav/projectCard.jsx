@@ -106,7 +106,7 @@ export default function ProjectCard({
         </ul>
       )}
       {isFocused && (
-        <div className="h-36 bg-white rounded-md m-1 p-2">
+        <div className="h-auto bg-white rounded-md m-1 p-2">
           <div className="flex justify-between items-center">
             <div>{format(data.due_date, "PPP", { locale: ko })}</div>
             <div>{`D-${Math.ceil(
