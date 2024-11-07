@@ -151,6 +151,7 @@ export default function ProjectContainer({
       status: {
         is_public: false,
       },
+      shared_users: [],
     });
     setShowForm(false);
   };
