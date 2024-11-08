@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { connectToDB } from "@/utils/database";
 import Todo from "@/models/todo";
 import Project from "@/models/project";
+import { NextResponse } from "next/server";
 
 /// TODO: 관리자 권한도 구현...?
 
@@ -13,12 +14,12 @@ import Project from "@/models/project";
 /// * session이 없으면 401 반환
 /// * 다음의 조건을 모두 만족할 경우, id에 해당하는 Todo Document를 body에 포함하여 200 반환
 ///   1. 일치하는 id를 가진 Todo Document가 DB에 존재
-///   2. 공개된 Todo이거나, 로그인된 사용자가 작성한 Todo
+///   2. 공개된 Todo이거나, 로그인된 사용자가 작성한 Todo || 공개되거나 공유된 프로젝트의 Todo
 /// * 불만족시 404 반환
 /// * 서버 에러시 500 반환
 export const GET = async (req, { params }) => {
   const { id } = params;
-  
+
   const session = await getServerSession(authOptions);
   if (!session) {
     return new Response("You must be logged in.", { status: 401 });
@@ -27,25 +28,26 @@ export const GET = async (req, { params }) => {
   try {
     await connectToDB();
 
-    const existingTodo = await Todo.findOne({
-      _id: id,
-      $or: [
-        { owner: session.user.id },
-        { is_public: true }
-      ]
-    });
+    const existingTodo = await Todo.findById(id);
 
-    if (existingTodo) {
-      return new Response(existingTodo, { status: 200 });
-    } else {
-      return new Response('Not found.', { status: 404 });
+    if (!existingTodo) {
+      return new Response("Not found.", { status: 404 });
     }
+    if (existingTodo.owner !== session.user.id && !existingTodo.is_public) {
+      const proj = await Project.findById(existingTodo.project);
+      if (!proj) return new Response("Not found.", { status: 404 });
+      
+      if (!proj.is_public && !proj.shared_users.includes(session.user.id))
+        return new Response("Not found.", { status: 404 });
+    }
+
+    return new Response(existingTodo, { status: 200 });    
   } catch (error) {
-    console.log('[에러] /api/todo/[id] GET 실패');
+    console.log("[에러] /api/todo/[id] GET 실패");
     console.log(error);
-    return new Response('Failed to fetch requested Todo List', { status: 500 });
+    return new Response("Failed to fetch requested Todo List", { status: 500 });
   }
-}
+};
 
 /// /api/todo/[id] PATCH 요청
 /// [요약] id에 해당하는 Todo Document를 일부 업데이트합니다.
@@ -68,7 +70,7 @@ export const PATCH = async (req, { params }) => {
     return new Response("You must be logged in.", { status: 401 });
   }
 
-  let patch = {}
+  let patch = {};
   if (title) {
     patch.title = title;
   }
@@ -83,13 +85,14 @@ export const PATCH = async (req, { params }) => {
   }
   if (tag) {
     let tagList = Array.isArray(tag) ? tag : [tag];
-    if (tagList.every(x => /^[ ]*#[^# ]+[ ]*$/.test(x))) {
-      patch.tags = tagList.map(x => x.trim().substring(1));
+    if (tagList.every((x) => /^[^# ]+$/.test(x))) {
+      patch.tags = tagList
     } else {
-      return new Response("Illegal tag format", { status: 422 });
+      console.error(tagList)
+      return new Response(`Illegal tag format ${tagList}`, { status: 422 });
     }
   }
-  if (status?.done) {
+  if (status?.done !== undefined) {
     patch.done = status.done;
   }
   if (status?.is_public) {
@@ -99,28 +102,39 @@ export const PATCH = async (req, { params }) => {
   try {
     await connectToDB();
 
+    // project 변경 시도
     if (project) {
-      const proj = await Project.findOne({
-        owner: session.user.id,
-        title: project
-      });
+      const proj = await Project.findOne({ title: project });
       if (!proj) {
         return new Response("Project not found.", { status: 404 });
       }
+
+      // code updated for clarity
+      if (proj.owner != session.user.id) {
+        // if it's not even visible to the user, then return 404
+        if (!proj.shared_users.includes(session.user.id)) {
+          return new Response("Project not found.", { status: 404 });
+        }
+      }
       patch.project = proj._id;
     }
-    const updatedDoc = await Todo.findOneAndUpdate({ _id: id, owner: session.user.id }, patch, { new: true });
+
+    const updatedDoc = await Todo.findOneAndUpdate(
+      { _id: id, owner: session.user.id },
+      patch,
+      { new: true }
+    );
     if (updatedDoc) {
-      return new Response(updatedDoc, { status: 200 })
+      return NextResponse.json(updatedDoc, { status: 200 });
     } else {
-      return new Response('Not found.', { status: 404 });
+      return new Response("Not found.", { status: 404 });
     }
   } catch (error) {
-    console.log('[에러] /api/todo/[id] PATCH 실패');
+    console.log("[에러] /api/todo/[id] PATCH 실패");
     console.log(error);
-    return new Response('Failed to patch requested Todo List', { status: 500 });
+    return new Response("Failed to patch requested Todo List", { status: 500 });
   }
-}
+};
 
 /// /api/todo/[id] DELETE 요청
 /// [요약] id에 해당하는 Todo Document를 삭제합니다.
@@ -140,15 +154,18 @@ export const DELETE = async (req, { params }) => {
 
   try {
     await connectToDB();
-    const originalDoc = await Todo.findOneAndDelete({ _id : id, owner: session.user.id });
+    const originalDoc = await Todo.findOneAndDelete({
+      _id: id,
+      owner: session.user.id,
+    });
     if (originalDoc != null) {
-      return new Response('Deleted requested Todo List', { status: 200 });
+      return new Response("Deleted requested Todo List", { status: 200 });
     } else {
-      return new Response('Not found.', { status: 404 });
+      return new Response("Not found.", { status: 404 });
     }
   } catch (error) {
-    console.log('[에러] /api/todo/[id] DELETE 실패');
+    console.log("[에러] /api/todo/[id] DELETE 실패");
     console.log(error);
-    return new Response('Failed to patch requested Todo List', { status: 500 });
+    return new Response("Failed to patch requested Todo List", { status: 500 });
   }
-}
+};

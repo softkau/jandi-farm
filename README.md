@@ -29,7 +29,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 todo 생성 엔드포인트
  * POST  
    `Todo` 데이터 베이스에 `body` 내용을 기반으로 todo를 생성  
-   인증이 되지 않았을시 `401` 반환
+   인증이 되지 않았을시 `401` 반환  
+   **shared project에 post도 가능**
 ```js
 body: {
   title: "title",
@@ -49,7 +50,8 @@ todo 조회/수정/삭제 엔드포인트
 인증 정보와 todo의 소유자가 일치하지 않을 시 실패
  * GET  
    요청한 `id`의 todo를 조회  
-   만약 `todo.status.is_public === true`이면 소유자가 달라도 조회 가능
+   만약 `todo.status.is_public === true`이면 소유자가 달라도 조회 가능  
+   만약 shared project이라면 조회는 가능
  * PATCH  
    요청한 `id`의 todo를 수정
  * DELETE  
@@ -60,7 +62,8 @@ project 생성 엔드포인트
  * POST  
    `Project` 데이터 베이스에 `body` 내용을 기반으로 project를 생성  
    인증이 되지 않았을시 `401` 반환  
-   (업데이트: 이제 user 별 `title` 중복 검사가 이루어집니다. 따라서 다른 유저와의 동일한 `title` 값으로 충돌이 발생하지 않습니다)
+   (업데이트: 이제 user 별 `title` 중복 검사가 이루어집니다. 따라서 다른 유저와의 동일한 `title` 값으로 충돌이 발생하지 않습니다)  
+   `shared_users` 설정 시 그 프로젝트, 그리고 연관된 TODO가 등록한 사용자에 대해 공유가 가능해집니다
 ```js
 body: {
   title: "title",
@@ -68,7 +71,10 @@ body: {
   due_date: "년/월/일", // Date()로 파싱 가능한 문자열
   status: {
     is_public: false // 공개 상태
-  }
+  },
+  shared_users: [ // 공유 가능한 사용자 이메일 (optional)
+    "ramen@example.com"
+  ]
 }
 ```
 
@@ -77,7 +83,8 @@ project 조회/수정/삭제 엔드포인트
 인증 정보와 project의 소유자가 일치하지 않을 시 실패
  * GET  
    요청한 `id`의 project를 조회  
-   만약 `project.status.is_public === true`이면 소유자가 달라도 조회 가능
+   만약 `project.status.is_public === true`이면 소유자가 달라도 조회 가능  
+   공유된 프로젝트면 조회는 가능. 삭제나 이름 편집 등은 불가능
  * PATCH  
    요청한 `id`의 project를 수정
  * DELETE  
@@ -88,18 +95,22 @@ project 조회/수정/삭제 엔드포인트
  * GET  
    요청한 `id`의 project에 포함된 todo를 조회  
    이 엔드포인트에서는 개별 todo의 `is_public`값은 무시하고  
-   project의 `is_public`만 고려하여 조회한다
+   project의 `is_public`만 고려하여 조회한다  
+   공유된 project인 경우 전부 조회 가능
 
 ## /api/user/[id]/todo
 `id`에 해당하는 유저의 todo를 전부 조회하는 엔드포인트  
-소유자가 아닌 경우, 공개 설정된 todo만 조회 가능
+소유자가 아닌 경우, 공개 설정된 todo만 조회 가능  
+**shared project의 todo를 조회하려면 /api/project/[id]/todo를 이용**  
+**여기선 따로 shared 처리를 하지 않습니다**
  * GET  
  요청한 `id`를 가진 유저의 todo를 조회하여 `Array`로 반환한다  
  다른 유저의 todo는 `is_public`이 `true`인 경우만 반환한다
 
 ## /api/user/[id]/project
 `id`에 해당하는 유저의 project를 전부 조회하는 엔드포인트  
-소유자가 아닌 경우, 공개 설정된 project만 조회 가능
+소유자가 아닌 경우, 공개 설정된 project만 조회 가능  
+**shared된 project까지 같이 불러옵니다**
  * GET  
    요청한 `id`를 가진 유저의 project를 조회하여 `Array`로 반환한다  
    다른 유저의 project는 `is_public`이 `true`인 경우만 반환한다

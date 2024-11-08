@@ -21,7 +21,8 @@ const ProjectSchema = new Schema({
     type: Schema.Types.Boolean,
     default: false,
     required: function() { return this.is_public != undefined }
-  }
+  },
+  shared_users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
 ProjectSchema.index({owner: 1, title: 1}, {unique: true})

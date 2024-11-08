@@ -24,9 +24,11 @@ function filterTodo(jsonArray, targetTags, targetProject) {
 
 export default function TodoContainer({
   todoList,
+  setTodoList,
   selectedTags,
   selectedProject,
-  className
+  openTodoEditor,
+  className,
 }) {
   const [groupedTodo, setGroupedTodo] = useState([]);
 
@@ -42,11 +44,20 @@ export default function TodoContainer({
   }, [selectedProject, selectedTags, todoList]);
 
   return (
-    <div className={cn("w-144 overflow-y-auto shrink-0 no-scrollbar", className)}>
+    <div
+      className={cn("w-144 overflow-y-auto shrink-0 no-scrollbar", className)}
+    >
       {Object.keys(groupedTodo)
         .sort((a, b) => compareAsc(a, b))
         .map((date, idx) => (
-          <DateContainer key={idx} date={date} todoList={groupedTodo[date]} className="w-144" />
+          <DateContainer
+            key={idx}
+            date={date}
+            todoList={groupedTodo[date]}
+            setTodoList={setTodoList}
+            openTodoEditor={openTodoEditor}
+            className="w-144"
+          />
         ))}
     </div>
   );

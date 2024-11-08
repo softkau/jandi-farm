@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { connectToDB } from "@/utils/database";
 import Todo from "@/models/todo";
 import Project from "@/models/project";
+import { NextResponse } from "next/server";
 
 /// /api/todo/new POST 요청
 /// [요약] 새로운 Todo Document를 생성합니다.
@@ -39,16 +40,12 @@ export const POST = async (req) => {
 
     let projectId = null;
     if (project) {
-      const proj = await Project.findOne({
-        owner: session.user.id,
-        title: project
-      });
-
-      if (proj != null) { // project가 존재하면 id 설정
-        projectId = proj._id;
-      } else { // project가 없으면 컷
+      const proj = await Project.findOne({ title: project });
+      if (!proj || (proj.owner != session.user.id && !proj.shared_users.includes(session.user.id))) {
         return new Response("Project not found.", { status: 404 });
       }
+
+      projectId = proj._id;
     }
     
     const newTodo = new Todo({
@@ -68,7 +65,7 @@ export const POST = async (req) => {
       return new Response('Failed to create new Todo List', { status: 500 });
     } 
 
-    return new Response(newTodo, { status: 201 });
+    return NextResponse.json(docSaved, { status: 201 });
   } catch (error) {
     console.log('[에러] /api/todo/new POST 실패');
     console.log(error);

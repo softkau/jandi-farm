@@ -35,13 +35,22 @@ export const GET = async (req, { params }) => {
       return NextResponse.json("User not found.", { status: 404 });
     }
 
-    let filter = {};
-    filter.owner = userId;
-    if (userId !== session.user.id) {
-      filter.is_public = true;
-    }
-    const existingProjects = await Project.find(filter).lean();
-    
+    // let filter = {};
+    // filter.owner = userId;
+    // if (userId !== session.user.id) {
+    //   filter.is_public = true;
+    // }
+
+    const existingProjects = await Project.find((userId === session.user.id) ? {
+      $or: [
+        { owner: userId },
+        { shared_users: userId },
+        { is_public: true }
+      ]
+    } : {
+      is_public: true
+    }).lean();
+
     return NextResponse.json(existingProjects, { status: 200 });
   } catch (error) {
     console.log('[에러] /api/user/[id]/project GET 실패');
