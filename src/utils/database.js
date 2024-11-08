@@ -1,27 +1,26 @@
 import mongoose from "mongoose";
 
-let isConnected = false;
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 export const connectToDB = async () => {
-  mongoose.set('strictQuery', true);
-  // mongoose.set('autoIndex', false); <= 배포할 때 성능향상을 위해 이 줄을 활성화할 것
-
-  if (isConnected) {
-    console.log('[알림] MongoDB에 이미 연결되어 있습니다.');
-    return;
+  if (cached.conn) {
+    console.log('[알림] 기존 MongoDB 연결 재사용');
+    return cached.conn;
   }
 
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGODB_URI, {
       dbName: "jandi_farm",
-      // useNewUrlParser: true,
-      // useUnifiedTopology: true
+    }).then((mongoose) => {
+      console.log('[알림] MongoDB에 연결되었습니다.');
+      return mongoose;
     });
-
-    isConnected = true;
-    console.log('[알림] MongoDB에 연결되었습니다.');
-  } catch (error) {
-    console.log('[에러] MongoDB 연결이 실패하였습니다.');
-    console.log(error);
   }
-}
+
+  cached.conn = await cached.promise;
+  return cached.conn;
+};
